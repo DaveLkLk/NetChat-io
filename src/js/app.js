@@ -420,9 +420,11 @@ function inputHeight(element){
       return
     }
     if(element.scrollHeight >= 150){
+        console.log(element.scrollHeight);
       element.classList.add('chat-message--scroll')
       element.style.setProperty('overflow-y', 'auto')
-      element.style.height = `auto`;
+      element.style.height = `150px`;
+      element.scrollTop = element.scrollHeight
 
       console.log("mayor a 150");
       return
