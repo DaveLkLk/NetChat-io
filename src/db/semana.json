@@ -1,0 +1,9 @@
+{
+  "idLunes": true,
+  "idMartes": true,
+  "idMiercoles": true,
+  "idJueves": true,
+  "idViernes": true,
+  "idSabado": false,
+  "idDomingo": false
+}
