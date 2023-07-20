@@ -3,9 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TEST SOCKET-DATE</title>
 </head>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+        }
+        html{
+            color-scheme: dark;
+        }
+        form{
+            max-width: 300px;
+            margin: 2em 1em;
+            border: 1px solid grey;
+            display: grid;
+            gap: 1em;
+            padding: 1em;
+        }
+        main{
+            max-width: 300px;
+            display: grid;
+            margin: 1em;
+        }
+        .main__message{
+            border: 1px solid grey;
+            height: 150px;
+            max-height: 150px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: .5em;
+        }
+        .main__message div{
+            padding: 5px;
+            margin: 0 0 .5em 0;
+            background: #303030;
+        }
+        .main__message p{
+            font-weight: bold;
+        }
+        .main__message span{
+            font-style: italic;
+            color: green;
+            margin-left: .5em;
+        }
+    </style>
 <body>
-    
+    <form action="" id="form-message">
+        <label for="">Message</label>
+        <input type="text" placeholder="message" id="user-message">
+        <button type="submit" id="btn-message">ENVIAR</button>
+    </form>
+    <main class="main">
+        <div class="main__message"></div>
+        <div class="main__console"></div>
+    </main>
+
+    <script>
+        // const fecha = new Date()
+        // const fechaActual = fecha.toLocaleDateString()
+        // const horaActual = fecha.getHours().toString().padStart(2, '0')
+        // const minutoActual = fecha.getMinutes().toString().padStart(2, '0')
+        // const sendTime = `${horaActual}:${minutoActual}`
+        const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+        const userMessage = document.getElementById('user-message')
+        const btnMessage = document.getElementById('btn-message')
+        const blockMessage = document.querySelector('.main__message')
+        const consola = document.querySelector('.main__console')
+
+        btnMessage.addEventListener('click', (e)=>{
+            e.preventDefault()
+            createMessage(blockMessage, userMessage)
+            userMessage.value = ''
+        })
+        function createMessage(container, message){
+            const p = document.createElement('p')
+            const divMessage = document.createElement('div')
+            const spanFecha = document.createElement('span')
+            const spanHora = document.createElement('span')
+            // spanHora.textContent = sendTime
+            // spanFecha.textContent = fechaActual
+            p.textContent = message.value
+            divMessage.appendChild(p)
+            divMessage.appendChild(spanFecha)
+            divMessage.appendChild(spanHora)
+            container.appendChild(divMessage)
+
+            consola.textContent = zonaActual
+            formatDateTimeZone(zonaActual)
+        }
+        function formatDateTimeZone(timeZone){
+            const currentDte = new Date()
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: timeZone,
+            }
+            return now.toLocaleString('es-PE', options)
+        }
+        function sendFormatTimeHour(){
+            const userTimeZone = 'America/Mexico_City'
+            const currentDateTime = {
+                fecha: formatDateTimeZone(userTimeZone),
+                hora: formatDateTimeZone(userTimeZone).split(',')[1].trim()
+            }
+            return currentDateTime
+        }
+    </script>
 </body>
 </html>
