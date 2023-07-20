@@ -84,35 +84,38 @@
             const divMessage = document.createElement('div')
             const spanFecha = document.createElement('span')
             const spanHora = document.createElement('span')
-            // spanHora.textContent = sendTime
-            // spanFecha.textContent = fechaActual
             p.textContent = message.value
+            spanFecha.textContent = sendFormatTimeHour(zonaActual).fecha
+            spanHora.textContent = sendFormatTimeHour(zonaActual).hora
+
             divMessage.appendChild(p)
             divMessage.appendChild(spanFecha)
             divMessage.appendChild(spanHora)
             container.appendChild(divMessage)
 
             consola.textContent = zonaActual
-            formatDateTimeZone(zonaActual)
         }
         function formatDateTimeZone(timeZone){
-            const currentDte = new Date()
-            const options = {
+            const currentDate = new Date()
+            const fechaOptions = {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
+                timeZone: timeZone,
+            }
+            const timeOptions = {
                 hour: '2-digit',
                 minute: '2-digit',
                 timeZone: timeZone,
             }
-            return now.toLocaleString('es-PE', options)
+            const fecha = currentDate.toLocaleDateString('es-PE', fechaOptions)
+            const hora = currentDate.toLocaleTimeString('es-PE', timeOptions)
+
+            return { fecha, hora }
         }
-        function sendFormatTimeHour(){
-            const userTimeZone = 'America/Mexico_City'
-            const currentDateTime = {
-                fecha: formatDateTimeZone(userTimeZone),
-                hora: formatDateTimeZone(userTimeZone).split(',')[1].trim()
-            }
+        function sendFormatTimeHour(timeZone){
+            const userTimeZone = timeZone
+            const currentDateTime = formatDateTimeZone(userTimeZone)
             return currentDateTime
         }
     </script>
