@@ -17,7 +17,7 @@ app.get('/', (req, res)=>{
     res.status(200).sendFile(pathIni)
 })
 app.get('/home', (req, res)=>{
-    const pathHome = path.join(__dirname, 'src', 'db', 'semana.json')
+    const pathHome = path.join(__dirname, 'src', 'pages', 'home.html')
     res.sendFile(pathHome)
 })
 app.put('/home', async(req, res)=>{
