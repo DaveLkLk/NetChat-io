@@ -1,5 +1,6 @@
 // clave API - OPEN EMOJI API
 // 93466aec4d6b52c2ac784009561974d49b0a87a9
+const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 
 // const EMOJI_LIST = 'https://emoji-api.com/emojis?access_key=93466aec4d6b52c2ac784009561974d49b0a87a9';
@@ -79,15 +80,17 @@ class Chat {
         if(!(this.getUser instanceof HTMLElement)){
             return console.log("no definido", this.getUser);
         }
-        if(this.getUser.value === ''){
+        if(this.getUser.value.trim() === ''){
             this.getUser.classList.add(`${this.getUser.id}--active`)
-            console.log(this.getUser);
+            this.getUser.value = ''
             setTimeout(()=>{
                 this.getUser.classList.remove(`${this.getUser.id}--active`)
             }, 1000)
             return
         }
-        this.username.value = this.getUser.value
+        const formatGetUser = this.getUser.value.replace(/\s+/g, ' ').trim()
+        this.getUser.value = formatGetUser
+        this.username.value = formatGetUser
         this.hiddenModal(true)
     }
     changeClassModal(boolean){
@@ -377,34 +380,56 @@ btnEmojiContainer.addEventListener('click', async(e)=>{
 // *****************************************
 
 // ******************************************************************************
-
-
-
-
-
-
+// INICIAN LOS SOCKETS
+const socket = io();
 
 
 
 
 const btnFile = document.querySelector('label[for="chat-file"]')
 const inpFile = document.getElementById('chat-file')
-inpFile.addEventListener('click', function(){
-    this.addEventListener('change', function(){
-        const year = this.files[0].lastModifiedDate.getFullYear()
-        const month = this.files[0].lastModifiedDate.getMonth()
-        const date = this.files[0].lastModifiedDate.getDate()
-        console.log(this.files);
-        console.log(this.files[0].name);
-        console.log(this.files[0].size);
-        console.log(this.files[0].type);
-        console.log(year, month, date);
-        // console.log(this);
-    })
-    // console.log(inpFile.files);
+inpFile.addEventListener('change', function(){
+    const file = this.files[0]
+    this.value = ''
+    const sendData = {
+        usr: chatUsername.value,
+        info: "enviando un archivo adjunto",
+        zonaHoraria: zonaActual
+    }
+    socket.emit('chat:sendfiles:on', sendData)
+    chatAction.innerHTML = `
+        <p>${sendData.info}
+            <span>•</span>
+            <span>•</span>
+            <span>•</span>
+        </p>
+    `;
+    displayImage(file)
 })
+function displayImage(file){
+    if(!file) return
+
+    const reader = new FileReader()
+    reader.onload = ()=>{
+        const imageSRC = reader.result
+        const link = URL.createObjectURL(file)
+        const nameDownload = file.name
+        chatGlobal.innerHTML += `
+            <div class="chat-users">
+            <a href="${link}" download="${nameDownload}">
+                <span>${file.name}</span>
+                <img src="${imageSRC}" download>
+            </a>
+            </div>
+            `;
+    }
+    reader.readAsDataURL(file)
+}
+
+
+
 btnFile.addEventListener('click', ()=>{
-    // console.log("hiciste click bro");
+    
 })
 
 function inputHeight(element){
@@ -416,7 +441,6 @@ function inputHeight(element){
     if(element.scrollHeight < 150){
       element.classList.remove('chat-message--scroll')
       element.style.setProperty('overflow-y', 'hidden')
-    //   console.log("menor a 150px");
       return
     }
     if(element.scrollHeight >= 150){
@@ -432,7 +456,6 @@ function inputHeight(element){
   }
 
 
-const socket = io();
 // Eventos y manejo del textarea del formulario
 function inputChatMessage(){
     if(chatMessage.value === ''){
@@ -488,10 +511,11 @@ function formdataSubmit(e, element){
             return
         }
         else{
-            emojiActions.classList.remove('emoji-actions--active')
+            emojiActions.classList.remove('emoji--show--active')
             socket.emit('chat:message',{
                 user: chatUsername.value,
-                message: element.value
+                message: element.value,
+                zonaHoraria: zonaActual
             })
             element.value = ''
             element.style.height = 'auto';
@@ -504,7 +528,6 @@ function formdataSubmit(e, element){
 // Escuchar eventos del servidor
 // problemas aqui
 socket.on('chat:message', (data)=>{
-    console.log(data.from);
     const sendMe = (data.from === socket.id.slice(0, 6)) ? 'Yo' : data.user
     const messageClass = (sendMe === 'Yo') ? 'chat-me' : 'chat-other'
     chatAction.innerHTML = ''
@@ -516,6 +539,15 @@ socket.on('chat:message', (data)=>{
         </div>
     `;
     chatGlobal.scrollTop = chatGlobal.scrollHeight
+})
+socket.on('chat:sendfiles:off', data=>{
+    chatAction.innerHTML = `
+        <p>${data.info}
+            <span>•</span>
+            <span>•</span>
+            <span>•</span>
+        </p>
+    `;
 })
 // ***********************
 socket.on('chat:typing:on', (data)=>{

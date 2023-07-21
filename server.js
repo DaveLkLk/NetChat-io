@@ -36,24 +36,54 @@ app.put('/home', async(req, res)=>{
     }
 });
 
+function getTimeZoneClient(timeZone){
+    const current = new Date()
+    const clientDateTime = new Date(current.toLocaleString('en-US', {timeZone: timeZone}))
+    const fechaOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }
+    const timeOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour2: false
+    }
+    const fecha = clientDateTime.toLocaleDateString('es-PE', fechaOptions)
+    const hora = clientDateTime.toLocaleTimeString('es-PE', timeOptions)
+
+    return { fecha, hora }
+}
+
 const io = socketIO(server)
 io.on('connection', (socket)=>{
     console.log("usuario conectado", socket.id);
     socket.on('chat:message', (data)=>{
         console.log(data);
-        const fecha = new Date()
-        const fechaActual = fecha.toLocaleDateString()
-        const horaActual = fecha.getHours().toString().padStart(2, '0')
-        const minutoActual = fecha.getMinutes().toString().padStart(2, '0')
-        const sendTime = `${horaActual}:${minutoActual}`
-        // io.sockets.emit('chat:message', data); /* origin code - group */
+        const { fecha, hora } = getTimeZoneClient(data.zonaHoraria)
         io.sockets.emit('chat:message', {
             user: data.user,
             message: data.message,
             from: socket.id.slice(0, 6),
-            time: sendTime,
-            fecha: fechaActual
+            time: hora,
+            fecha: fecha
         })
+    });
+    socket.on('chat:sendfiles:on', (data)=>{
+        console.log(data)
+        const objectData = {
+            info: data.info,
+            from: socket.id.slice(0, 6)
+        }
+        socket.broadcast.emit('chat:sendfiles', objectData)
+    });
+    socket.on('chat:sendfiles:off', (data)=>{
+        console.log(data)
+        const objectData = {
+            info: data.info,
+            from: socket.id.slice(0, 6)
+        }
+        socket.broadcast.emit('chat:sendfiles', objectData)
     });
 
     socket.on('chat:typing:on', (data)=>{
@@ -61,7 +91,7 @@ io.on('connection', (socket)=>{
     });
     socket.on('chat:typing:off', (data)=>{
         socket.broadcast.emit('chat:typing:off', data)
-    })
+    });
 });
 
 server.listen(port, ()=>{
