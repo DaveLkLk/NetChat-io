@@ -51,6 +51,9 @@
         }
     </style>
 <body>
+    <header>
+        <h1>pruebita de zona horaria bro</h1>
+    </header>
     <form action="" id="form-message">
         <label for="">Message</label>
         <input type="text" placeholder="message" id="user-message">
@@ -62,11 +65,6 @@
     </main>
 
     <script>
-        // const fecha = new Date()
-        // const fechaActual = fecha.toLocaleDateString()
-        // const horaActual = fecha.getHours().toString().padStart(2, '0')
-        // const minutoActual = fecha.getMinutes().toString().padStart(2, '0')
-        // const sendTime = `${horaActual}:${minutoActual}`
         const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 
         const userMessage = document.getElementById('user-message')
