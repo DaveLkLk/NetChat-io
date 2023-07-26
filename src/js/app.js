@@ -1,7 +1,26 @@
-// clave API - OPEN EMOJI API
-// 93466aec4d6b52c2ac784009561974d49b0a87a9
+import { createBtnEmoji, createEmojiShow } from "./functions.js"
+import { createChatMessage } from "./functions.js"
+import { createBtnMicro } from "./functions.js"
+import { createBtnChat } from "./functions.js"
+
+import { MESSAGE_TYPE } from "./functions.js";
+import { ALERT_TYPE } from "./functions.js";
+import { createAlert } from "./functions.js";
+const divAlert = document.querySelector('.alert')
 const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 
+const insertEmoji = document.querySelector('.insert-emoji')
+
+
+const FGactionMessage = document.querySelector('.fg__action--message')
+const switchSend = document.querySelector('.switch__send')
+const switchMicro = document.querySelector('.switch__microphone')
+insertEmoji.appendChild(createBtnEmoji())
+insertEmoji.appendChild(createEmojiShow())
+
+FGactionMessage.appendChild(createChatMessage())
+switchSend.appendChild(createBtnChat())
+switchMicro.appendChild(createBtnMicro())
 
 // const EMOJI_LIST = 'https://emoji-api.com/emojis?access_key=93466aec4d6b52c2ac784009561974d49b0a87a9';
 const EMOJI_LIST = './db/emojis.json';
@@ -28,6 +47,7 @@ const chatMessage = document.getElementById('chat-message')
 const chatAudio = document.querySelector('.switch__microphone')
 const chatSend = document.querySelector('.switch__send')
 const btnChat = document.getElementById('btn-chat')
+const btnAudio = document.getElementById('btn-audio')
 
 async function getData(urlParam){
     try{
@@ -178,11 +198,11 @@ class chatActions {
         const dataName1 = this.toggle1.getAttribute('data-toggle')
         const dataName2 = this.toggle2.getAttribute('data-toggle')
 
-        if(this.validator.value.length === 0){
+        if(this.validator.value.trim().length === 0){
             this.toggle1.classList.remove(`${dataName1}--disabled`)
             this.toggle2.classList.add(`${dataName2}--disabled`)
         }
-        if(this.validator.value.length > 0){
+        if(this.validator.value.trim().length > 0){
             this.toggle1.classList.add(`${dataName1}--disabled`)
             this.toggle2.classList.remove(`${dataName2}--disabled`)
         }
@@ -311,6 +331,7 @@ async function setListEmoji(object){
 
 btnEmoji.addEventListener('click', async(e)=>{
     // CODE EMOJI
+    btnEmoji.classList.toggle(`${btnEmoji.id}--active`)
     let isClassActive = ObjectEmoji.toggle.classList.contains('emoji--show--active')
     if(isClassActive === true){
         ObjectEmoji.toggle.classList.remove(`${ObjectEmoji.toggle.id}--active`)
@@ -384,28 +405,92 @@ btnEmojiContainer.addEventListener('click', async(e)=>{
 const socket = io();
 
 
-
-
-const btnFile = document.querySelector('label[for="chat-file"]')
-const inpFile = document.getElementById('chat-file')
-inpFile.addEventListener('change', function(){
-    const file = this.files[0]
-    this.value = ''
-    const sendData = {
-        usr: chatUsername.value,
-        info: "enviando un archivo adjunto",
-        zonaHoraria: zonaActual
+class FileActions {
+    constructor(input, trigger){
+        if(!(input instanceof HTMLElement && trigger instanceof HTMLElement)){
+            return console.log("parametros no definidos");
+        }
+        this.input = input,
+        this.trigger = trigger
     }
-    socket.emit('chat:sendfiles:on', sendData)
-    chatAction.innerHTML = `
-        <p>${sendData.info}
-            <span>•</span>
-            <span>•</span>
-            <span>•</span>
-        </p>
-    `;
-    displayImage(file)
-})
+    changeFile(){
+    }
+    
+    // createPreview(){
+        //     const inputMessage = createChatMessage()
+        //     const sendMessage = createBtnChat()
+        //     const sendEmoji = createBtnEmoji()
+        //     const previewContainer = document.createElement('div')
+        //     previewContainer.classList.add('file__preview')
+        //     previewContainer.innerHTML = `
+        //     <div class="preview__image">
+        //     <img src="">
+        //     </div>
+        //     <div class="preview__message">
+        //     <div class="message__emoji">
+        //     ${sendEmoji.outerHTML}
+        //     ${createEmojiShow().outerHTML}
+        //     </div>
+    //     <div class="message__text">
+    //                 ${inputMessage.outerHTML}
+    //                 </div>
+    //             <div class="message__send">
+    //                 ${sendMessage.outerHTML}
+    //             </div>
+    //         </div>
+    //         `;
+    // }
+    
+    init(){
+        this.trigger.addEventListener('click', ()=>{
+            this.input.click()
+            // this.changeFile()
+        })
+        this.input.addEventListener('change', ()=> change(this.input));
+        function change(newFiles){
+            const archivo = newFiles.files[0]
+            console.log(archivo);
+        }
+    }
+}
+
+const fileBtn = document.querySelector('.file__btn button')
+const fileDivBtn = document.querySelector('.file__btn')
+const fileShow = document.querySelector('.file__show')
+// const fileBtnAudio = document.getElementById('file--audio')
+// const fileBtnVideo = document.getElementById('file--video')
+// const fileBlockAudio = document.querySelector('.file__audioblock')
+// const fileBlockVideo = document.querySelector('.file__videoblock')
+const filesInputs = Array.from(document.querySelectorAll('.file__actions input[type="file"]'))
+
+const fileTypes = document.querySelectorAll('.file__type')
+fileTypes.forEach((element, i) => {
+    if(element instanceof HTMLElement){
+        const actionFileAudio = new FileActions(filesInputs[i], element)
+        actionFileAudio.init()
+    }
+});
+
+
+// const inpFile = document.getElementById('chat-file')
+// inpFile.addEventListener('change', function(){
+//     const file = this.files[0]
+//     this.value = ''
+//     const sendData = {
+//         usr: chatUsername.value,
+//         info: "enviando un archivo adjunto",
+//         zonaHoraria: zonaActual
+//     }
+//     socket.emit('chat:sendfiles:on', sendData)
+//     chatAction.innerHTML = `
+//         <p>${sendData.info}
+//             <span>•</span>
+//             <span>•</span>
+//             <span>•</span>
+//         </p>
+//     `;
+//     displayImage(file)
+// })
 function displayImage(file){
     if(!file) return
 
@@ -427,9 +512,9 @@ function displayImage(file){
 }
 
 
-
-btnFile.addEventListener('click', ()=>{
-    
+fileBtn.addEventListener('click', function(){
+    fileDivBtn.classList.toggle('file__btn--active')
+    fileShow.classList.toggle('file__show--active')
 })
 
 function inputHeight(element){
@@ -444,14 +529,11 @@ function inputHeight(element){
       return
     }
     if(element.scrollHeight >= 150){
-        console.log(element.scrollHeight);
       element.classList.add('chat-message--scroll')
       element.style.setProperty('overflow-y', 'auto')
       element.style.height = `150px`;
-      element.scrollTop = element.scrollHeight
-
-      console.log("mayor a 150");
-      return
+      element.scrollTop = element.scrollHeight;
+      return;
     }
   }
 
@@ -461,7 +543,7 @@ function inputChatMessage(){
     if(chatMessage.value === ''){
         socket.emit('chat:typing:off', chatMessage.value)
         chatAction.innerHTML = ''
-        chatMessage.style.height = `20px`;
+        chatMessage.style.height = `40px`;
         return
     }
     socket.emit('chat:typing:on', chatUsername.value)
@@ -478,9 +560,9 @@ chatMessage.addEventListener('keydown', function(e){
       this.style.height = `${this.scrollHeight}px`;
       this.scrollTop = this.scrollHeight
     }
-    if(e.code === 'Backspace' || e.code === 'Delete' || this.value.length === 0){
+    if(e.code === 'Backspace' || e.code === 'Delete'){
         if(this.value === ''){
-            this.style.height = `20px`;
+            this.style.height = `40px`;
             return
         }
         this.style.height = `auto`;
@@ -497,6 +579,14 @@ chatMessage.addEventListener('keyup', function(e){
     }
   })
 
+//   Boton audio deshabilitado 
+btnAudio.addEventListener('click', ()=>{
+    const message = MESSAGE_TYPE.NO_DISPONIBLE
+    const typeAlert = ALERT_TYPE.INFO
+    const formData = document.querySelectorAll('.form-data textarea, .form-data button, .form-data .file__btn, .form-data btn-emoji')
+    createAlert(divAlert, message, typeAlert, formData)
+})
+// *************************************************************
 btnChat.addEventListener('click', (e)=>{
     formdataSubmit(e, chatMessage)
 })
@@ -504,6 +594,9 @@ function formdataSubmit(e, element){
     e.preventDefault()
     if(element instanceof HTMLElement){
         if(element.value.trim() === ''){
+            element.style.overflowY = 'hidden'
+            element.value = ''
+            element.style.height = '40px'
             element.classList.add('chat-message--null')
             setTimeout(()=>{
                 element.classList.remove('chat-message--null')
@@ -518,7 +611,7 @@ function formdataSubmit(e, element){
                 zonaHoraria: zonaActual
             })
             element.value = ''
-            element.style.height = 'auto';
+            element.style.height = '40px';
             element.scrollTop = element.scrollHeight
             // esconder el boton de enviar mensaje:
             compare.toggleClass()

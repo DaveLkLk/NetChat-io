@@ -1,0 +1,91 @@
+.insert-emoji .btn-emoji{
+    padding: 0;
+    cursor: pointer;
+}
+.insert-emoji svg.emoji-svg{
+    fill-rule: evenodd;
+    width: 22px;
+    height: 22px;
+    fill: var(--btn-color-hover);
+}
+.insert-emoji .btn-emoji--active svg{
+    filter: drop-shadow(0 0 5px #9760e5);
+}
+
+.insert-emoji .emoji--show{
+    --position: 350px;
+    transform-origin: bottom left;
+    transform: scale(0);
+    transition: transform .2s linear;
+    height: var(--position);
+    width: 300px;
+    position: absolute;
+    z-index: 3;
+    top: calc(calc(var(--position) * -1) - 10px);
+    left: 25px;
+    background: #100f0fd8;
+    display: grid;
+    grid-auto-rows: auto 1fr auto;
+    padding: 1em;
+    gap: .5em;
+    border-radius: 30px 30px 30px 0;
+}
+.emoji--show.emoji--show--active{
+    transform: scale(1);
+}
+/* .emoji--show .emoji-search{} */
+.emoji--show .emoji-search input{
+    width: 100%;
+    padding: .5em 1em;
+}
+.emoji--show .emoji-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    grid-auto-rows: 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 5px;
+    padding: 8px;
+}
+    .emoji-list--search{
+        grid-auto-rows: min-content;
+    }
+    .emoji-list li{
+        --width: 100%;
+        transition: transform .2s ease-in-out;
+        width: var(--width);
+        height: var(--width);
+        font-size: 20px;
+        cursor: pointer;
+        text-align: center;
+        overflow: hidden;
+    }
+    .emoji-list li:active{
+        transform: scale(1.2);
+    }
+.emoji--show .emoji-group{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    gap: 5px;
+    overflow: hidden;
+    background: var(--bg-dark-default);
+    border-radius: var(--radius-modal);
+}
+.emoji-group button{
+    padding: 0;
+    --size: 20px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 0;
+}
+.emoji-group button img{
+    pointer-events: none;
+    filter: invert(47%) sepia(80%) saturate(2847%) hue-rotate(191deg) brightness(105%) contrast(101%);
+    transition: filter .3s ease-in-out;
+}
+.emoji-group .btn__group:hover img,
+.emoji-group .btn__group--active img,
+.emoji-group .btn__group--active:focus img{
+    filter: invert(1) brightness(150%);
+}

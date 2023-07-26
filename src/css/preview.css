@@ -1,0 +1,32 @@
+
+.file__preview{
+
+    border: var(--debug1);
+}
+.file__preview button{
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+.file__preview button svg{
+    fill: var(--icon-color-text);
+    fill-rule: evenodd;
+    width: 22px;
+    height: 22px;
+}
+.file__preview textarea{
+    padding: 5px;
+    border-radius: 5px;
+    resize: none;
+    overflow: hidden;
+    font-size: 15px;
+    width: 100%;
+    min-height: 30px;
+    height: 30px;
+    max-height: 150px !important;
+    transition: height .3s ease-in-out;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    border: transparent solid 1px;
+    background: #303030;
+}

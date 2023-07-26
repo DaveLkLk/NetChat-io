@@ -1,0 +1,56 @@
+:root{
+    --icon-color-multimedia: #007bfc;
+    --icon-color-document: #7f66ff;
+    --icon-color-audio: #ff2e74;
+    --icon-color-program: #63cb77;
+    --icon-color-text: #dfdada;
+
+    --btn-color-hover: var(--icon-color-document);
+    --clr-default: var(--icon-color-text);
+    --clr-mdl-username: var(--icon-color-document);
+    --bg-dark-default: #303030;
+    --radius-modal: 10px;
+
+    --debug1: 1px solid red;
+    --debug2: 1px solid yellow;
+    --debug3: 1px solid orange;
+    --debug4: 1px solid white;
+}
+
+*, *:before, *:after{
+    margin: 0;
+    box-sizing: border-box !important;
+    padding: 0;
+    border: 0;
+    outline: none;
+    font-family: system-ui, sans-serif;
+}
+::-webkit-scrollbar{
+    background-color: transparent;
+}
+::-webkit-scrollbar-button{
+    background: transparent;
+}
+::-webkit-scrollbar-thumb{
+    background: #636363;
+    border-radius: 5px;
+}
+
+label img,
+button img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+input{
+    padding: .5em;
+    border-radius: 10px;
+}
+[type="button"]{
+    cursor: pointer;
+    background: transparent;
+}
+
+html{
+    color-scheme: dark;
+}
