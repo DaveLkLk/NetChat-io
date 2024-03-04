@@ -35,6 +35,9 @@ app.put('/home', async(req, res)=>{
         res.status(500).send('Error al actualizar los datos')
     }
 });
+app.post('/chat-upload', (req, res) => {
+    
+})
 
 function getTimeZoneClient(timeZone){
     const current = new Date()
@@ -58,6 +61,7 @@ function getTimeZoneClient(timeZone){
 const io = socketIO(server)
 io.on('connection', (socket)=>{
     console.log("usuario conectado", socket.id);
+
     socket.on('chat:message', (data)=>{
         console.log(data);
         const { fecha, hora } = getTimeZoneClient(data.zonaHoraria)
@@ -69,6 +73,13 @@ io.on('connection', (socket)=>{
             fecha: fecha
         })
     });
+    socket.on('chat:sendFile', data => {
+        const {fecha, hora} = getTimeZoneClient(data.zona)
+        const from = socket.id.slice(0, 6)
+        console.log(data);
+        io.sockets.emit('chat:sendFile', {...data, fecha, hora, from})
+    })
+    
     socket.on('chat:sendfiles:on', (data)=>{
         console.log(data)
         const objectData = {

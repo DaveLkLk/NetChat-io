@@ -2,28 +2,50 @@ import { createBtnEmoji, createEmojiShow } from "./functions.js"
 import { createChatMessage } from "./functions.js"
 import { createBtnMicro } from "./functions.js"
 import { createBtnChat } from "./functions.js"
+import { messageURL } from "./functions.js"
 
-import { MESSAGE_TYPE } from "./functions.js";
-import { ALERT_TYPE } from "./functions.js";
-import { createAlert } from "./functions.js";
-const divAlert = document.querySelector('.alert')
+import { createAlert, MESSAGE_TYPE, ALERT_TYPE } from "./functions.js";
+import { queryScreenPage, createPreviewContent, createLoader } from "./functions.js";
+import { createiconImgType, typesFile } from "./functions.js";
+
 const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 const insertEmoji = document.querySelector('.insert-emoji')
-
-
+    insertEmoji.appendChild(createBtnEmoji())
+    insertEmoji.appendChild(createEmojiShow())
 const FGactionMessage = document.querySelector('.fg__action--message')
+    FGactionMessage.appendChild(createChatMessage())
 const switchSend = document.querySelector('.switch__send')
+    switchSend.appendChild(createBtnChat())
 const switchMicro = document.querySelector('.switch__microphone')
-insertEmoji.appendChild(createBtnEmoji())
-insertEmoji.appendChild(createEmojiShow())
+    switchMicro.appendChild(createBtnMicro())
 
-FGactionMessage.appendChild(createChatMessage())
-switchSend.appendChild(createBtnChat())
-switchMicro.appendChild(createBtnMicro())
+
+const divAlert = document.querySelector('.alert')
+const formData = document.querySelectorAll('.form-data textarea, .form-data button, .form-data .file__btn, .form-data btn-emoji')
+
+window.addEventListener('resize', function(){
+    const objectAlert = {
+        container: divAlert,
+        message: MESSAGE_TYPE.MIN_SCREEN,
+        class: ALERT_TYPE.FATAL,
+        arr: formData
+    }
+    queryScreenPage(450, objectAlert, 'min')
+})
+window.addEventListener('DOMContentLoaded', function(){
+    const objectAlert = {
+        container: divAlert,
+        message: MESSAGE_TYPE.MIN_SCREEN,
+        class: ALERT_TYPE.FATAL,
+        arr: formData
+    }
+    queryScreenPage(450, objectAlert, 'min')
+})
 
 // const EMOJI_LIST = 'https://emoji-api.com/emojis?access_key=93466aec4d6b52c2ac784009561974d49b0a87a9';
 const EMOJI_LIST = './db/emojis.json';
+
 
 const emojiActions = document.getElementById('emoji--show')
 const emojiList = document.getElementById('emoji-list')
@@ -43,7 +65,7 @@ const chatGlobal = document.getElementById('chat-global')
 const chatAction = document.getElementById('chat-action')
 const chatUsername = document.getElementById('chat-username')
 const changeUsername = document.getElementById('change-username')
-const chatMessage = document.getElementById('chat-message')
+const chatMessage = document.querySelector('.chat-message')
 const chatAudio = document.querySelector('.switch__microphone')
 const chatSend = document.querySelector('.switch__send')
 const btnChat = document.getElementById('btn-chat')
@@ -237,163 +259,167 @@ compare.init()
 // **********************************************************************
 // **********************************************************************
 // **********************************************************************
-function addEmojiMessage(){
-    if(!(this instanceof HTMLLIElement)){
-        return console.log("ocurrio un problema al localizar el elemento", this);
+class chatEmoji {
+    constructor(containerActions){
+        this.textArea = containerActions.querySelector('.chat-message')
+        this.btn = containerActions.querySelector('.emoji--btn .btn-emoji')
+        this.toggle = containerActions.querySelector('.emoji--show')
+        this.search = containerActions.querySelector('.emoji-search input#emoji-search')
+        this.emojilist = containerActions.querySelector('.emoji-list')
+        this.btngroups = containerActions.querySelectorAll('.emoji-group button')
+        this.emgroup = containerActions.querySelector('.emoji-group')
+        this.item = 'btn-position'
+        this.position = this.getLocalStorage() || 0
     }
-    chatMessage.value += this.textContent
-    compare.toggleClass()
-}
-function setEmojiMessage(){
-    const emojiList = ObjectEmoji.list
-    if(!(emojiList instanceof HTMLElement)){
-        return console.log("object.list no definido");
+    getLocalStorage(){
+        return localStorage.getItem(this.item)
     }
-    const listEmojis = document.querySelectorAll('.emoji-list li')
-    listEmojis.forEach(li =>{
-        li.addEventListener('click', addEmojiMessage)
-    })
-}
-async function nameGroupsEmoji(){
-    const response = await getData(EMOJI_LIST)
-    const nameGroups = response.reduce((acc, emoji)=>{
-        if(!(acc.includes(emoji.group))){
-            acc.push(emoji.group)
+    setLocalStorage(value){
+        return localStorage.setItem(this.item, value)
+    }
+    addEmojiMessage(e){
+        if(e.target.tagName === 'LI'){
+            this.textArea.value += e.target.textContent
+            this.textArea.focus()
+            // mostrar u ocultar el boton de enviar
+            compare.toggleClass()
         }
-        return acc
-    }, [])
-    return nameGroups
-}
-async function setDataBtn(){
-    const nameGroups = await nameGroupsEmoji()
-    buttonsEmoji.forEach((btn, i)=>{
-        btn.setAttribute('data-group', nameGroups[i])
-    })
-}
-const btnEmojiContainer = document.getElementById('emoji-group')
-const buttonsEmoji = document.querySelectorAll('.emoji-group button')
-const btnEmoji = document.getElementById('btn-emoji')
-
-const newStorage = new Chat()
-newStorage.item = "btn-position"
-const ObjectEmoji = {
-    toggle: emojiActions,
-    list: emojiList,
-    item: newStorage.item,
-    local: newStorage.getLocalStorage(),
-    position: 0
-}
-async function showGroupEmoji(){
-    try {
-        const response = await fetch(EMOJI_LIST)
-        const data = await response.json()
-        
-        const nameGroups = await nameGroupsEmoji()
-        const ObjectGroupsEmoji = data.reduce((acc, obj)=>{
-            const EmojiGroup = obj.group
-            if(!acc[EmojiGroup]){
-                acc[EmojiGroup] = []
+    }
+    async nameGroupsEmoji(){
+        const response = await getData(EMOJI_LIST)
+        const nameGroups = response.reduce((acc, emoji)=>{
+            if(!(acc.includes(emoji.group))){
+                acc.push(emoji.group)
             }
-            acc[EmojiGroup].push(obj)
             return acc
+        }, [])
+        return nameGroups
+    }
+    async showGroupEmoji(){
+        try {
+            const response = await fetch(EMOJI_LIST)
+            const data = await response.json()
+            
+            const nameGroups = await this.nameGroupsEmoji()
+            const ObjectGroupsEmoji = data.reduce((acc, obj)=>{
+                const EmojiGroup = obj.group
+                if(!acc[EmojiGroup]){
+                    acc[EmojiGroup] = []
+                }
+                acc[EmojiGroup].push(obj)
+                return acc
+            })
+            let listGroups = []
+            nameGroups.map((element)=>{
+                let cadaObjeto = ObjectGroupsEmoji[element]
+                if(cadaObjeto){
+                    listGroups.push(cadaObjeto)
+                }
+            })
+            return listGroups;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async setListEmoji(){
+        try {
+            const ArrayGroupsEmoji = await this.showGroupEmoji()
+            this.emojilist.innerHTML = ''
+            let position = Number(this.position)
+            ArrayGroupsEmoji[position].forEach(emoji => {
+                const li = document.createElement('li')
+                li.setAttribute('emoji-name', emoji.slug)
+                li.setAttribute('emoji-group', emoji.group)
+                li.setAttribute('emoji-code', emoji.codePoint)
+                li.setAttribute('emoji-subgroup', emoji.subGroup)
+                li.textContent = emoji.character
+                this.emojilist.appendChild(li)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    init(){
+        const load = async()=>{
+            this.position = this.getLocalStorage()
+            let position = Number(this.getLocalStorage())
+            this.btngroups[position].classList.add('btn__group--active')
+            await this.setListEmoji(this)
+        }
+        const localItem = this.getLocalStorage()
+        if(localItem) load()
+
+        this.btn.addEventListener('click', async()=>{
+            // CODE EMOJI
+            load()
+            this.btn.classList.toggle(`${this.btn.id}--active`)
+            let isClassActive = this.toggle.classList.contains('emoji--show--active')
+            if(isClassActive){
+                this.toggle.classList.remove(`${this.toggle.id}--active`)
+                return
+            }
+            if(isClassActive === false){
+                this.toggle.classList.add(`${this.toggle.id}--active`)
+                await this.setListEmoji()
+                return
+            }
+        });
+        document.addEventListener('DOMContentLoaded', async()=>{
+            if(localItem === null || localItem === undefined){
+                this.setLocalStorage(this.position)
+                this.btngroups[this.position].classList.add('btn__group--active')
+                await this.setListEmoji()
+                return
+            }
+            this.position = this.getLocalStorage()
+            let position = Number(this.getLocalStorage())
+            this.btngroups[position].classList.add('btn__group--active')
+            await this.setListEmoji(this)
         })
-        let listGroups = []
-        nameGroups.map((element)=>{
-            let cadaObjeto = ObjectGroupsEmoji[element]
-            if(cadaObjeto){
-                listGroups.push(cadaObjeto)
+        this.emgroup.addEventListener('click', async(e)=>{
+            if(e.target && e.target.tagName === 'BUTTON'){
+                const isActive = e.target.classList.contains('btn__group--active')
+                if(!isActive){
+                    this.btngroups.forEach((btn)=>{
+                        btn.classList.remove('btn__group--active')
+                    })
+                    e.target.classList.add('btn__group--active')
+                    const position = Array.from(this.btngroups).indexOf(e.target)
+                    this.setLocalStorage(position)
+                    this.position = position
+                    await this.setListEmoji()
+                }
             }
         })
-        return listGroups;
-    } catch (error) {
-        console.log(error);
-    }
-}
-async function setListEmoji(object){
-    if(!(object instanceof Object)){
-        return console.log("no definido", object);
-    }
-    const ArrayGroupsEmoji = await showGroupEmoji()
-    object.list.innerHTML = ''
-    let position = Number(object.position)
-    ArrayGroupsEmoji[position].forEach(emoji => {
-        const li = document.createElement('li')
-        li.setAttribute('emoji-name', emoji.slug)
-        li.setAttribute('emoji-group', emoji.group)
-        li.setAttribute('emoji-code', emoji.codePoint)
-        li.setAttribute('emoji-subgroup', emoji.subGroup)
-        li.textContent = emoji.character
-        object.list.appendChild(li)
-    });
-    setEmojiMessage();
-}
-
-
-btnEmoji.addEventListener('click', async(e)=>{
-    // CODE EMOJI
-    btnEmoji.classList.toggle(`${btnEmoji.id}--active`)
-    let isClassActive = ObjectEmoji.toggle.classList.contains('emoji--show--active')
-    if(isClassActive === true){
-        ObjectEmoji.toggle.classList.remove(`${ObjectEmoji.toggle.id}--active`)
-        return
-    }
-    if(isClassActive === false){
-        ObjectEmoji.toggle.classList.add(`${ObjectEmoji.toggle.id}--active`)
-        await setListEmoji(ObjectEmoji)
-        return
-    }
-})
-document.addEventListener('DOMContentLoaded', async()=>{
-    const getLocalStorage = ObjectEmoji.local
-    if(getLocalStorage === null || getLocalStorage === undefined){
-        newStorage.setLocalStorage(ObjectEmoji.position)
-        buttonsEmoji[ObjectEmoji.position].classList.add('btn__group--active')
-        await setListEmoji(ObjectEmoji)
-        return
-    }
-    ObjectEmoji.position = ObjectEmoji.local
-    let position = Number(newStorage.getLocalStorage())
-    buttonsEmoji[position].classList.add('btn__group--active')
-    await setListEmoji(ObjectEmoji)
-})
-
-emojiSearch.addEventListener('input', async()=> {
-    if(emojiSearch.value === ''){
-        await setListEmoji(ObjectEmoji)
-        return
-    }
-    let value = emojiSearch.value.toLowerCase()
-    const listEmojis = await getData(EMOJI_LIST)
-    
-    emojiList.classList.add('emoji-list--search')
-    emojiList.innerHTML = ''
-    listEmojis.forEach((emoji) =>{
-        if(emoji.slug.toLowerCase().includes(value)){
-            const li = document.createElement('li')
-            li.setAttribute('emoji-name', emoji.slug)
-            li.setAttribute('emoji-group', emoji.group)
-            li.setAttribute('emoji-subgroup', emoji.subGroup)
-            li.textContent = emoji.character
-            emojiList.appendChild(li)
-        }
-    })
-})
-
-btnEmojiContainer.addEventListener('click', async(e)=>{
-    if(e.target && e.target.tagName === 'BUTTON'){
-        const isActive = e.target.classList.contains('btn__group--active')
-        if(!isActive){
-            buttonsEmoji.forEach((btn)=>{
-                btn.classList.remove('btn__group--active')
+        this.search.addEventListener('input', async()=> {
+            if(this.search.value === ''){
+                await this.setListEmoji()
+                return
+            }
+            let value = this.search.value.toLowerCase()
+            const listEmojis = await getData(EMOJI_LIST)
+            
+            this.emojilist.classList.add('emoji-list--search')
+            this.emojilist.innerHTML = ''
+            listEmojis.forEach(emoji =>{
+                if(emoji.slug.toLowerCase().includes(value)){
+                    const li = document.createElement('li')
+                    li.setAttribute('emoji-name', emoji.slug)
+                    li.setAttribute('emoji-group', emoji.group)
+                    li.setAttribute('emoji-subgroup', emoji.subGroup)
+                    li.textContent = emoji.character
+                    this.emojilist.appendChild(li)
+                }
             })
-            e.target.classList.add('btn__group--active')
-            const position = Array.from(buttonsEmoji).indexOf(e.target)
-            newStorage.setLocalStorage(position)
-            ObjectEmoji.position = position
-            await setListEmoji(ObjectEmoji)
-        }
+        })
+        this.emojilist.addEventListener('click', this.addEmojiMessage.bind(this))
     }
-})
+}
+
+
+const formGroupActions = document.querySelector('.form__group-actions')
+const emojiDefault = new chatEmoji(formGroupActions)
+emojiDefault.init()
 // *****************************************
 // *****************************************
 // *****************************************
@@ -404,234 +430,826 @@ btnEmojiContainer.addEventListener('click', async(e)=>{
 // INICIAN LOS SOCKETS
 const socket = io();
 
+const previewContent = document.querySelector('.chat-preview')
 
 class FileActions {
-    constructor(input, trigger){
-        if(!(input instanceof HTMLElement && trigger instanceof HTMLElement)){
-            return console.log("parametros no definidos");
+    constructor(input, element, dataName, filetoggle){
+        this.input = input instanceof HTMLElement ? input : null;
+        this.element = element instanceof HTMLElement ? element : null;
+        this.dataName = typeof dataName === "string" ? dataName : undefined;
+        this.filetoggle = typeof filetoggle === 'function' ? filetoggle : undefined;
+        this.date = new Date();
+
+        if(!this.input || !this.element){
+            throw new Error("Parámetros invalidos: input y element deben ser instancias de HTMLElement.")
         }
-        this.input = input,
-        this.trigger = trigger
     }
-    changeFile(){
+
+    togglePreviewButton(element, hide, txtarea){
+        if(hide === false){
+            element.classList.add(`${element.id}--active`)
+            return
+        }
+        if(hide === true){
+            const previewBtn = document.querySelector('.preview__btn')
+            function previewBtnHandler(txtarea){
+                element.classList.remove(`${element.id}--active`)
+                element.innerHTML = ''
+                txtarea.value = ''
+                return
+            }
+            previewBtn.addEventListener('click', ()=>previewBtnHandler(this.input))
+        }
+        if(hide === 'hidden'){
+            element.classList.remove(`${element.id}--active`)
+            element.innerHTML = ''
+            txtarea.value = ''
+            return
+        }
+        if(element === undefined || hide === undefined){
+            console.log("parámetros no definidos-> element || hide");
+        }
     }
-    
-    // createPreview(){
-        //     const inputMessage = createChatMessage()
-        //     const sendMessage = createBtnChat()
-        //     const sendEmoji = createBtnEmoji()
-        //     const previewContainer = document.createElement('div')
-        //     previewContainer.classList.add('file__preview')
-        //     previewContainer.innerHTML = `
-        //     <div class="preview__image">
-        //     <img src="">
-        //     </div>
-        //     <div class="preview__message">
-        //     <div class="message__emoji">
-        //     ${sendEmoji.outerHTML}
-        //     ${createEmojiShow().outerHTML}
-        //     </div>
-    //     <div class="message__text">
-    //                 ${inputMessage.outerHTML}
-    //                 </div>
-    //             <div class="message__send">
-    //                 ${sendMessage.outerHTML}
-    //             </div>
-    //         </div>
-    //         `;
-    // }
-    
+    getDateObject(){
+        const dias = {
+            0: 'domingo',
+            1: 'lunes',
+            2: 'martes',
+            3: 'miercoles',
+            4: 'jueves',
+            5: 'viernes',
+            6: 'sabado'
+        };
+        const meses = {
+            0: 'enero',
+            1: 'febrero',
+            2: 'marzo',
+            3: 'abril',
+            4: 'mayo',
+            5: 'junio',
+            6: 'julio',
+            7: 'agosto',
+            8: 'septiembre',
+            9: 'octubre',
+            10: 'noviembre',
+            11: 'diciembre',
+        }
+        const year = this.date.getFullYear()
+        const month = this.date.getMonth()
+        const dayMonth = this.date.getDate()
+        const dayWeek = this.date.getDay()
+        const timeHour = String(this.date.getHours()).padStart(2, '0')
+        const timeMinute = String(this.date.getMinutes()).padStart(2, '0')
+        const timeSeconds = String(this.date.getSeconds()).padStart(2, '0')
+        const stringMonth = String(month + 1).padStart(2, '0')
+        const stringDayMonth = String(dayMonth).padStart(2, '0')
+        const nameMonth = String(meses[month])
+        const nameDayWeek = String(dias[dayWeek])
+        const shortDayWeek = nameDayWeek.toUpperCase().slice(0, 3)
+        const shortNameMonth = nameMonth.toUpperCase().slice(0, 3)
+        const fechaLocal = `${stringDayMonth}-${stringMonth}-${year}`
+        const diaMes = `${stringDayMonth}-${shortNameMonth}`
+        const formatFullTime = `${timeHour}:${timeMinute}:${timeSeconds}`
+        const formatTime = `${timeHour}:${timeMinute}`
+
+        const objectDate = {
+            year,
+            mes: stringMonth,
+            day: stringDayMonth,
+            dayweek: nameDayWeek,
+            shortmonth: shortNameMonth,
+            shortdayweek: shortDayWeek,
+            fecha: fechaLocal,
+            daymonth: diaMes,
+            time: formatTime,
+            fulltime: formatFullTime
+        }
+        return objectDate
+    }
+    getFileTypeIcon(fileName){
+        const fileTypeIcons = {
+            'mp4': 'video-mp4.png',
+            'jpg': 'image-jpg.png',
+            'png': 'image-png.png',
+            'aix': 'app-aix.png',
+            'apk': 'app-apk.png',
+            'doc': 'document-docx.png',
+            'docx': 'document-docx.png',
+            'xls': 'document-xlsx.png',
+            'xlsx': 'document-xlsx.png',
+            'ppt': 'document-ppt.png',
+            'pptx': 'document-ppt.png',
+            'exe': 'application-x-msdownload.png',
+            'msi': 'application-x-msdownload.png',
+            'zip': 'app-zip.png',
+            'aia': 'app-aia.webp',
+            'pdf': 'document-pdf.png',
+            'psd': 'app-psd.png',
+            'fla': 'app-fla.png',
+            'txt': 'document-txt.png',
+            'html': 'document-html.png',
+            'css': 'document-css.png',
+            'json': 'app-json.png',
+            'js': 'document-js.png',
+            'py': 'app-python.png',
+            'dart': 'app-dart.png',
+            'ts': 'code-ts.png',
+            'php': 'document-php.png',
+            'sql': 'document-sql.png',
+        }
+        const extension = fileName.split('.').pop().toLowerCase()
+        const currentIcon = fileTypeIcons[extension]
+        const defaultIcon = './assets/document-other.png'
+        return currentIcon ? `./assets/${currentIcon}` : defaultIcon
+    }
+    setContentMultimedia(objectFile){
+        const thisClass = this
+        const reader = new FileReader()
+        reader.onload = function(e){
+            const contenido = e.target.result
+            objectFile.content = contenido
+            if(thisClass.dataName === typesFile.multimedia){
+                try {
+                    if(objectFile.response.multimedia === null){
+                        createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                        return
+                    }
+                    if(objectFile.response.media instanceof HTMLImageElement){
+                        const imgFile = objectFile.response.media
+                        imgFile.src = objectFile.content
+                        imgFile.alt = `Netchat-IO -> img multimedia`
+                        imgFile.addEventListener('load', ()=>{
+                            objectFile.loader.classList.add('loader--hide')
+                            objectFile.response.divmedia.classList.remove('multimedia__container--loading')
+                        })
+                    }
+                    if(objectFile.response.media instanceof HTMLVideoElement){
+                        const videoFile = objectFile.response.media
+                        function errorMediaFile(){
+                            const objectErrorMedia = {
+                                isError: false,
+                                message: ''
+                            }
+                            videoFile.addEventListener('error', ()=>{
+                                const mediaError = videoFile.error
+                                if(mediaError.MEDIA_ERR_DECODE){
+                                    objectErrorMedia.isError = true
+                                    objectErrorMedia.message = "Error al decodificar el video"
+                                }else if(mediaError.MEDIA_ERR_NETWORK){
+                                    objectErrorMedia.isError = true
+                                    objectErrorMedia.message = 'Error de descarga del video'
+                                }else if(mediaError.MEDIA_ERR_SRC_NOT_SUPPORTED){
+                                    objectErrorMedia.isError = true
+                                    objectErrorMedia.message = "Formato de archivo no compatible"
+                                }
+                                if(objectErrorMedia.isError){
+                                    createAlert(divAlert, objectErrorMedia.message, ALERT_TYPE.ERROR, [])
+                                    const sizeFormat = thisClass.getFileSize(objectFile.size)
+                                    const responseFileIcon = createiconImgType()
+                                    responseFileIcon.estado.textContent = 'No se pudo mostrar la vista previa'
+                                    const formatFile = objectFile.nombre.split('.').pop().toUpperCase()
+                                    responseFileIcon.span.textContent = `${formatFile} • ${sizeFormat.strSize}`
+                                    responseFileIcon.img.src = thisClass.getFileTypeIcon(objectFile.nombre)
+                                    responseFileIcon.img.alt = `Netchat-IO / ${objectFile.tipo}`
+                                    objectFile.response.multimedia.innerHTML = ''
+                                    objectFile.response.multimedia.appendChild(responseFileIcon.div)
+                                }
+                            })
+                        }
+                        errorMediaFile()
+                        videoFile.src = objectFile.content
+                        videoFile.controls = true
+                        videoFile.addEventListener('loadeddata', ()=>{
+                            objectFile.loader.classList.add('loader--hide')
+                            objectFile.response.divmedia.classList.remove('multimedia__container--loading')
+                        })
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    createAlert(divAlert, error.message, ALERT_TYPE.ERROR, formData)
+                    return
+                }
+            }
+        }
+        reader.readAsDataURL(objectFile.archivo)
+    }
+    setContentAudio(objectFile){
+        const thisClass = this
+        const reader = new FileReader()
+        reader.onload = function(e){
+            const contenido = e.target.result
+            const audioBlob = new Blob([contenido], {type: objectFile.tipo})
+            const audioUrl = URL.createObjectURL(audioBlob)
+            objectFile.content = audioUrl
+
+            if(thisClass.dataName === typesFile.audio){
+                try {
+                    if(objectFile.response.multimedia === null){
+                        createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                        return
+                    }
+                    if(objectFile.response.media instanceof HTMLAudioElement){
+                        const audioFile = objectFile.response.media
+                        audioFile.src = objectFile.content
+                        audioFile.controls = true
+                        // MANEJAR POSIBLES ERRORES
+                        audioFile.addEventListener('error', (err)=>{
+                            createAlert(divAlert, err.message, ALERT_TYPE.ERROR, formData)
+                        })
+                        // OCULTAR EL LOADER AL CARGAR LOS DATOS
+                        audioFile.addEventListener('loadeddata', ()=>{
+                            objectFile.loader.classList.add('loader--hide')
+                            objectFile.response.divmedia.classList.remove('multimedia__container--loading')
+                        })
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    createAlert(divAlert, error.message, ALERT_TYPE.ERROR, formData)
+                    return
+                }
+            }
+        }
+        reader.readAsArrayBuffer(objectFile.archivo)
+    }
+    setContentDocument(objectFile){
+        const thisClass = this
+        const {archivo, tipo, size, response, loader, nombre} = objectFile
+        console.log(archivo);
+        const reader = new FileReader()
+        reader.onload = function(e){
+            const content = e.target.result
+            const documentBlob = new Blob([content], {type: tipo})
+            console.log(documentBlob);
+            // URL DEL DOCUMENTO PARA LOS WEBSOCKETS
+            const documentUrl = URL.createObjectURL(documentBlob)
+            objectFile.content = documentUrl
+            // VALIDACIONES ...
+            if(thisClass.dataName === typesFile.document){
+                try {
+                    if(response.multimedia === null){
+                        createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                        return
+                    }
+                    response.multimedia.innerHTML = ''
+                    const iconDocument = thisClass.getFileTypeIcon(objectFile.nombre)
+
+                    response.media.addEventListener('error', (err)=>{
+                        createAlert(divAlert, err.message, ALERT_TYPE.ERROR, formData)
+                        console.log(err.message);
+                    })
+                    const formatSize = thisClass.getFileSize(size)
+                    const documentImgFile = createiconImgType()
+                    documentImgFile.img.src = iconDocument
+                    documentImgFile.img.alt = objectFile.info
+                    const arrNameDoc = nombre.split('.')
+                    documentImgFile.estado.textContent = arrNameDoc[0]
+                    documentImgFile.span.textContent = `${arrNameDoc[1].toUpperCase()} • ${formatSize.strSize}`
+                    // SE AGREGA AL HTML EL DIV-CONTAINER
+                    documentImgFile.img.addEventListener('load', ()=>{
+                        loader.classList.add('loader--hide')
+                        response.divmedia.classList.remove('multimedia__container--loading')
+                    })
+                    // SE AGREGA A LA VISTA PREVIA EL HTML - IMAGEN 
+                    response.multimedia.appendChild(documentImgFile.div)
+                    // let ancla = document.createElement('a')
+                    // ancla.href = documentUrl
+                    // ancla.download
+                    // ancla.click()
+                    // console.log(ancla);
+
+                } catch (error) {
+                    console.log(error);
+                    createAlert(divAlert, error.message, ALERT_TYPE.ERROR, formData)
+                    return
+                }
+            }
+        }
+        reader.readAsArrayBuffer(archivo)
+    }
+    setContentApps(objectFile){
+        const thisClass = this
+        const {size, tipo, nombre, archivo, loader, response} = objectFile
+        // LLAMAR A LA INSTANCIA PARA ENVIAR MENSAJES
+        const chatSendMsg = new ChatSendMessage()
+        const reader = new FileReader()
+        reader.onload = function(e){
+            try {
+                const content = e.target.result
+                // const fileBlob = new Blob([content], {type: tipo})
+                // const url = URL.createObjectURL(fileBlob)
+
+                
+
+                response.multimedia.innerHTML = ''
+                const previewAppImg = createiconImgType()
+                const formatSize = thisClass.getFileSize(size)
+                const imgSrc = thisClass.getFileTypeIcon(nombre)
+                previewAppImg.img.src = imgSrc
+                previewAppImg.img.alt = objectFile.info
+                const arrNameDoc = nombre.split('.')
+                const nameFile = arrNameDoc.slice(0, -1).join(' ')
+                const strTypeFile = arrNameDoc.pop()
+                previewAppImg.estado.textContent = nameFile
+                previewAppImg.span.textContent = `${strTypeFile.toUpperCase()} • ${formatSize.strSize}`
+
+                // SE AGREGA AL HTML EL DIV-CONTAINER
+                previewAppImg.img.addEventListener('load', ()=>{
+                    loader.classList.add('loader--hide')
+                    response.divmedia.classList.remove('multimedia__container--loading')
+                })
+                // SE AGREGA A LA VISTA PREVIA EL HTML - IMAGEN 
+                response.multimedia.appendChild(previewAppImg.div)
+
+                // PROBLEMAS AQUI, FALTA RESOLVER EL ASUNTO DE ENVIAR EN BINARIO AL SERVIDOR?
+                // SE QUITO EN bin: content - PARA EVITAR PROBLEMAS
+                const dataFileSockets = {
+                    size: formatSize.strSize,
+                    name: nameFile,
+                    strtype: strTypeFile,
+                    type: tipo,
+                    zona: zonaActual,
+                    user: chatSendMsg.username.value,
+                    icon: thisClass.getFileTypeIcon(nombre)
+                }
+                chatSendMsg.isPreview = true
+                chatSendMsg.preview = previewContent
+                chatSendMsg.message = response.textArea
+                chatSendMsg.emjshow = response.emojishow
+                chatSendMsg.btnsend = response.btnsend
+                chatSendMsg.data = dataFileSockets
+                chatSendMsg.toggleClose = thisClass.togglePreviewButton
+                chatSendMsg.init()
+                // ESPERAR A QUE LA CLASE ENVIE LOS DATOS ...
+            } catch (error) {
+                console.log(error);
+                createAlert(divAlert, error.message, ALERT_TYPE.ERROR, formData)
+                return
+            }
+        }
+        reader.onerror = function(e){
+            const message = e.target.error.message
+            createAlert(divAlert, message, ALERT_TYPE.ERROR, [])
+            console.log(message);
+        }
+        reader.readAsArrayBuffer(archivo)
+    }
+    setFileReader(archivo){
+        const thisClass = this
+        const size = archivo.size
+        const nombre = archivo.name
+        const objectDate = this.getDateObject()
+        // HACER TERNARIA PARA OBTENER SI O SI LA EXTENSION DEL FILE
+        const tipo = String(archivo.type)
+        // CREACION DEL LOADING ANTES DE MOSTRAR EL CONTENIDO
+        const loader = createLoader()
+        // INSTANCIA DE LOS EVENTOS DEL TEXTAREA
+        const eventsChatMessage = new ChatSendMessage()
+        
+        if(this.dataName === typesFile.multimedia){
+            if(!(tipo.startsWith('image/')) && !(tipo.startsWith('video/'))){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                return
+            }
+            const responsePreview = createPreviewContent(tipo)
+            const isNullKeys = Object.keys(responsePreview).filter(key => responsePreview[key] === null)
+            if(isNullKeys.length > 0){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_PREVIEW,ALERT_TYPE.ERROR, formData)
+                return
+            }
+            previewContent.appendChild(responsePreview.container)
+            thisClass.togglePreviewButton(previewContent, false)
+
+            // LLAMAR A LA INSTANCIA DE LA CLASE EMOJI
+            const previewActions = new chatEmoji(previewContent)
+            previewActions.init()
+            
+            eventsChatMessage.message = responsePreview.textArea
+            thisClass.togglePreviewButton(previewContent, true)
+
+            loader.classList.remove('loader--hide')
+            responsePreview.divmedia.classList.add('multimedia__container--loading')
+            responsePreview.multimedia.appendChild(loader)
+            if(responsePreview.media instanceof HTMLImageElement){
+                console.log("procesando imagen");
+            }
+            if(responsePreview.media instanceof HTMLVideoElement ){
+                // si supera el tamaño de 100MB -> bytes
+                if(size > 100000000){
+                    createAlert(divAlert, MESSAGE_TYPE.PROCESS_MAXMEDIA, ALERT_TYPE.TEMP, [])
+                }
+            }
+            const objectMultimedia = {
+                info: `Netchat io - ${objectDate.fecha} / ${objectDate.time}`,
+                archivo,
+                loader,
+                size,
+                tipo,
+                nombre,
+                response: responsePreview,
+                content: null
+            }
+            this.setContentMultimedia(objectMultimedia)
+        }
+        else if(this.dataName === typesFile.audio){
+            if(!(tipo.startsWith('audio/'))){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                return
+            }
+            const responsePreview = createPreviewContent(tipo)
+            // COMPROBAR NO NULOS EN LA RESPUESTA DE LA PLANTILLA
+            const isNullKeys = Object.keys(responsePreview).filter(key => responsePreview[key] === null)
+            if(isNullKeys.length > 0){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_PREVIEW,ALERT_TYPE.ERROR, formData)
+                return
+            }
+
+            previewContent.appendChild(responsePreview.container)
+            thisClass.togglePreviewButton(previewContent, false)
+            // LLAMAR A LA INSTANCIA DE LA CLASE EMOJI
+            const previewActions = new chatEmoji(previewContent)
+            previewActions.init()
+            // OTORGAR EVENTOS AL CHAT-MESSAGE
+            eventsChatMessage.message = responsePreview.textArea
+            thisClass.togglePreviewButton(previewContent, true)
+            // MOSTRAR EL LOADER INICIALMENTE
+            loader.classList.remove('loader--hide')
+            responsePreview.divmedia.classList.add('multimedia__container--loading')
+            responsePreview.multimedia.appendChild(loader)
+            if(responsePreview.media instanceof HTMLAudioElement ){
+                // si supera el tamaño de 100MB -> bytes
+                if(size > 100000000){
+                    createAlert(divAlert, MESSAGE_TYPE.PROCESS_MAXMEDIA, ALERT_TYPE.TEMP, [])
+                }
+            }
+            const objectMultimedia = {
+                info: `Netchat io - ${objectDate.fecha} / ${objectDate.time}`,
+                archivo,
+                loader,
+                size,
+                tipo,
+                nombre,
+                response: responsePreview,
+                content: null
+            }
+            this.setContentAudio(objectMultimedia)
+        }
+        else if(this.dataName === typesFile.document){
+            if(!(tipo.startsWith('application/')) && !(tipo.startsWith('text/'))){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_TYPE_FILE, ALERT_TYPE.INFO, formData)
+                return
+            }
+            const responsePreview = createPreviewContent(tipo)
+            // COMPROBAR NO NULOS EN LA RESPUESTA DE LA PLANTILLA
+            const isNullKeys = Object.keys(responsePreview).filter(key => responsePreview[key] === null)
+            if(isNullKeys.length > 0){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_PREVIEW,ALERT_TYPE.ERROR, formData)
+                return
+            }
+            // AGREGAR AL HTML LA PLANTILLA HTML PREVIEW
+            previewContent.appendChild(responsePreview.container)
+            thisClass.togglePreviewButton(previewContent, false)
+            // LLAMAR A LA INSTANCIA DE LA CLASE EMOJI
+            const previewActions = new chatEmoji(previewContent)
+            previewActions.init()
+            // OTORGAR EVENTOS AL CHAT-MESSAGE
+            eventsChatMessage.message = responsePreview.textArea
+            thisClass.togglePreviewButton(previewContent, true)
+            // MOSTRAR EL LOADER INICIALMENTE
+            loader.classList.remove('loader--hide')
+            responsePreview.divmedia.classList.add('multimedia__container--loading')
+            responsePreview.multimedia.appendChild(loader)
+            // si supera el tamaño de 100MB -> bytes
+            if(size > 100000000){
+                createAlert(divAlert, MESSAGE_TYPE.PROCESS_MAXMEDIA, ALERT_TYPE.TEMP, [])
+            }
+            const objectMultimedia = {
+                info: `Netchat io - ${objectDate.fecha} / ${objectDate.time}`,
+                archivo,
+                loader,
+                size,
+                tipo,
+                nombre,
+                response: responsePreview,
+                content: null
+            }
+            this.setContentDocument(objectMultimedia)
+        }
+        else if(this.dataName === typesFile.apps){
+            const responsePreview = createPreviewContent('all')
+            // COMPROBAR NO NULOS EN LA RESPUESTA DE LA PLANTILLA
+            const isNullKeys = Object.keys(responsePreview).filter(key => responsePreview[key] === null)
+            if(isNullKeys.length > 0){
+                createAlert(divAlert, MESSAGE_TYPE.ERROR_PREVIEW,ALERT_TYPE.ERROR, formData)
+                return
+            }
+            try {
+                // AGREGAR AL HTML LA PLANTILLA HTML PREVIEW
+                previewContent.appendChild(responsePreview.container)
+                thisClass.togglePreviewButton(previewContent, false)
+                // LLAMAR A LA INSTANCIA DE LA CLASE EMOJI
+                const previewActions = new chatEmoji(previewContent)
+                previewActions.init()
+                // OTORGAR EVENTOS AL CHAT-MESSAGE
+                eventsChatMessage.message = responsePreview.textArea
+                thisClass.togglePreviewButton(previewContent, true)
+                // MOSTRAR EL LOADER INICIALMENTE
+                loader.classList.remove('loader--hide')
+                responsePreview.divmedia.classList.add('multimedia__container--loading')
+                responsePreview.multimedia.appendChild(loader)
+                // si supera el tamaño de 100MB -> bytes
+                if(size > 100000000){
+                    createAlert(divAlert, MESSAGE_TYPE.PROCESS_MAXMEDIA, ALERT_TYPE.TEMP, [])
+                }
+                const objectMultimedia = {
+                    info: `Netchat io - ${objectDate.fecha} / ${objectDate.time}`,
+                    archivo,
+                    loader,
+                    size,
+                    tipo,
+                    nombre,
+                    response: responsePreview,
+                    content: null
+                }
+                this.setContentApps(objectMultimedia)
+            } catch (error) {
+                console.log(error);
+                createAlert(divAlert, error.message, ALERT_TYPE.ERROR, formData)
+                return
+            }
+        }
+    }
+    getFileSize(size){
+        const kb = 1024
+        const mb = kb * 1024
+        const gb = mb * 1024
+        const limitFile = 100
+        
+        if(size >= gb){
+            const gbSize = size / gb
+            const strSize = `${gbSize.toFixed(1)}GB`
+            return {gbSize, strSize, limitFile}
+        }
+        else if(size >= mb){
+            const mbSize = Math.round(size / mb)
+            const strSize = `${mbSize}MB`
+            return {mbSize, strSize, limitFile}
+        }
+        else{
+            const kbSize = Math.ceil(size / kb)
+            const strSize = `${kbSize}KB` 
+            return {kbSize, strSize, limitFile}
+        }
+    }
+    change(newFiles){
+        const archivo = newFiles.files[0]
+        this.filetoggle()
+        if(!(archivo instanceof File && newFiles.files.length > 0)){
+            const message = MESSAGE_TYPE.ERROR_FILES
+            const typeAlert = ALERT_TYPE.ERROR
+            createAlert(divAlert, message, typeAlert, formData)
+            return console.log(message);
+        }
+        this.setFileReader(archivo)
+    }
     init(){
-        this.trigger.addEventListener('click', ()=>{
-            this.input.click()
-            // this.changeFile()
-        })
-        this.input.addEventListener('change', ()=> change(this.input));
-        function change(newFiles){
-            const archivo = newFiles.files[0]
-            console.log(archivo);
-        }
+        this.element.addEventListener('click', ()=> this.input.click())
+        this.input.addEventListener('change', ()=> this.change(this.input));
     }
 }
 
 const fileBtn = document.querySelector('.file__btn button')
 const fileDivBtn = document.querySelector('.file__btn')
 const fileShow = document.querySelector('.file__show')
-// const fileBtnAudio = document.getElementById('file--audio')
-// const fileBtnVideo = document.getElementById('file--video')
-// const fileBlockAudio = document.querySelector('.file__audioblock')
-// const fileBlockVideo = document.querySelector('.file__videoblock')
 const filesInputs = Array.from(document.querySelectorAll('.file__actions input[type="file"]'))
-
 const fileTypes = document.querySelectorAll('.file__type')
+
+function fileBtnToggle(){
+    fileDivBtn.classList.toggle('file__btn--active')
+    fileShow.classList.toggle('file__show--active')
+}
+fileBtn.addEventListener('click', function(){
+    fileBtnToggle()
+})
 fileTypes.forEach((element, i) => {
     if(element instanceof HTMLElement){
-        const actionFileAudio = new FileActions(filesInputs[i], element)
+        const dataTypes = element.getAttribute('data-type')
+        const actionFileAudio = new FileActions(
+            filesInputs[i],
+            element,
+            dataTypes,
+            fileBtnToggle)
         actionFileAudio.init()
+        actionFileAudio.getDateObject()
     }
 });
 
 
-// const inpFile = document.getElementById('chat-file')
-// inpFile.addEventListener('change', function(){
-//     const file = this.files[0]
-//     this.value = ''
-//     const sendData = {
-//         usr: chatUsername.value,
-//         info: "enviando un archivo adjunto",
-//         zonaHoraria: zonaActual
-//     }
-//     socket.emit('chat:sendfiles:on', sendData)
-//     chatAction.innerHTML = `
-//         <p>${sendData.info}
-//             <span>•</span>
-//             <span>•</span>
-//             <span>•</span>
-//         </p>
-//     `;
-//     displayImage(file)
-// })
-function displayImage(file){
-    if(!file) return
-
-    const reader = new FileReader()
-    reader.onload = ()=>{
-        const imageSRC = reader.result
-        const link = URL.createObjectURL(file)
-        const nameDownload = file.name
-        chatGlobal.innerHTML += `
-            <div class="chat-users">
-            <a href="${link}" download="${nameDownload}">
-                <span>${file.name}</span>
-                <img src="${imageSRC}" download>
-            </a>
-            </div>
-            `;
+class ChatSendMessage {
+    constructor (textarea, emjshow, btnSendMsg){
+        this.dataUrl = null
+        this.data = null
+        this.toggleClose = null
+        this.preview = null
+        this.message = textarea
+        this.emjshow = emjshow
+        this.btnsend = btnSendMsg
+        this.actions = document.getElementById('chat-action')
+        this.username = document.getElementById('chat-username')
+        this.min = 40
+        this.max = 160
+        this.isPreview = false
+        this.scrollHidden = (element)=> element.style.overflowY = 'hidden'
+        this.scrollAuto = (element)=> element.style.overflowY = 'auto'
+        this.minHeight = (element)=> element.style.height = '40px'
     }
-    reader.readAsDataURL(file)
-}
-
-
-fileBtn.addEventListener('click', function(){
-    fileDivBtn.classList.toggle('file__btn--active')
-    fileShow.classList.toggle('file__show--active')
-})
-
-function inputHeight(element){
-    // console.log(element.scrollTop);
-    if(!(element instanceof HTMLElement)){
-        return console.log("elemento no definido", element);
+    inputHeight(){
+        if(!(this.message instanceof HTMLTextAreaElement)){
+            return console.log("this.message no definido");
+        }
+        if(this.message.scrollHeight < this.max){
+            this.message.classList.remove('chat-message--scroll')
+        }
+        if(this.message.scrollHeight >= this.max){
+            this.message.classList.add('chat-message--scroll')
+        }
     }
-    // console.log(element.scrollHeight);
-    if(element.scrollHeight < 150){
-      element.classList.remove('chat-message--scroll')
-      element.style.setProperty('overflow-y', 'hidden')
-      return
-    }
-    if(element.scrollHeight >= 150){
-      element.classList.add('chat-message--scroll')
-      element.style.setProperty('overflow-y', 'auto')
-      element.style.height = `150px`;
-      element.scrollTop = element.scrollHeight;
-      return;
-    }
-  }
-
-
-// Eventos y manejo del textarea del formulario
-function inputChatMessage(){
-    if(chatMessage.value === ''){
-        socket.emit('chat:typing:off', chatMessage.value)
-        chatAction.innerHTML = ''
-        chatMessage.style.height = `40px`;
-        return
-    }
-    socket.emit('chat:typing:on', chatUsername.value)
-    chatMessage.style.height = `${chatMessage.scrollHeight}px`;
-    chatMessage.scrollTop = chatMessage.scrollHeight
-    
-    // console.log(chatMessage.scrollTop);
-    inputHeight(chatMessage)
-}
-chatMessage.addEventListener('input', inputChatMessage);
-
-chatMessage.addEventListener('keydown', function(e){
-    if(e.code === 'ShiftRight'){
-      this.style.height = `${this.scrollHeight}px`;
-      this.scrollTop = this.scrollHeight
-    }
-    if(e.code === 'Backspace' || e.code === 'Delete'){
-        if(this.value === ''){
-            this.style.height = `40px`;
+    inputChatMessage(){
+        if(this.message.value === ''){
+            socket.emit('chat:typing:off', this.message.value)
+            this.actions.innerHTML = ''
             return
         }
-        this.style.height = `auto`;
+        socket.emit('chat:typing:on', this.username.value)
+        this.inputHeight()
     }
-    if(e.code === 'Enter'){
+    chatMessageSize(){
+        this.inputChatMessage()
+        this.message.style.height = 'auto'
+        this.message.style.height = `${Math.min(this.message.scrollHeight, 160)}px`
+        this.message.style.overflowY = this.message.scrollHeight > 160 ? 'scroll' : 'hidden'
+        this.message.scrollTop = this.message.scrollHeight - this.message.clientHeight
+    }
+    chatMessageOnKeyDown(e){
+        if(e.key === 'Enter' && !e.shiftKey){
+            e.preventDefault()
+            // EN MODO MOBILE LA TECLA ENTER NO ENVIA MENSAJES
+            if(window.innerWidth <= 450){
+                e.target.value += '\n'
+                this.chatMessageSize()
+            }else{
+                this.formdataSubmit(e, this.isPreview)
+            }
+        }
+    }
+    backSpaceOnKeydown(e){
+        if(e.key === 'Backspace' && this-this.message.value === ''){
+            e.preventDefault()
+            this.deleteLine()
+        }
+    }
+    deleteLine(){
+        const lines = this.message.value.split('\n')
+        lines.pop()
+        this.message.value = lines.join('\n')
+        this.chatMessageSize()
+    }
+    chatMessageEventsListener(){
+        this.message.addEventListener('input', ()=> this.chatMessageSize())
+        this.message.addEventListener('keydown', (e)=> this.chatMessageOnKeyDown(e))
+        this.message.addEventListener('keydown', (e)=> this.backSpaceOnKeydown(e))
+    }
+    formdataSubmit(e, isPreview){
         e.preventDefault()
-        formdataSubmit(e, this)
+        if(isPreview === false){
+            if(this.message instanceof HTMLElement){
+                // ACCION SI EL MENSAJE ES VACIO
+                this.minHeight(this.message)
+                if(this.message.value.trim() === ''){
+                    this.scrollHidden(this.message)
+                    this.message.value = ''
+                    this.message.classList.add('chat-message--null')
+                    setTimeout(()=>{
+                        this.message.classList.remove('chat-message--null')
+                    }, 1000);
+                    // ...
+                    return
+                }
+                // SE ENVIA EL MENSAJE A TODOS
+                this.emjshow.classList.remove('emoji--show--active')
+                socket.emit('chat:message',{
+                    user: this.username.value,
+                    message: this.message.value,
+                    zonaHoraria: zonaActual
+                })
+                this.message.value = ''
+                this.scrollHidden(this.message)
+                // esconder el boton de enviar mensaje:
+                compare.toggleClass()
+            }
+            return
+        }
+        if(isPreview === true){
+            // ENVIAR CONTENIDO DE VISTA PREVIA ...
+            this.emjshow.classList.remove('emoji--show--active')
+            // socket.emit('chat:sendFile', this.data)
+            const msg = this.message.value
+            const dataSocket = {...this.data, msg}
+            console.log(dataSocket);
+            this.toggleClose(this.preview, 'hidden', this.message)
+            socket.emit('chat:sendFile', dataSocket)
+            return
+        }
     }
-})
-chatMessage.addEventListener('keyup', function(e){
-    if(e.code === 'ShiftRight'){
-        this.value += '\n'
-        this.style.height = `${this.scrollHeight}px`;
+    init(){
+        this.chatMessageEventsListener()
+        this.btnsend.addEventListener('click', (e)=> this.formdataSubmit(e, this.isPreview))
     }
-  })
+}
+const sendMessageIni = new ChatSendMessage(chatMessage, emojiActions, btnChat)
+sendMessageIni.init()
+
 
 //   Boton audio deshabilitado 
+
 btnAudio.addEventListener('click', ()=>{
     const message = MESSAGE_TYPE.NO_DISPONIBLE
     const typeAlert = ALERT_TYPE.INFO
-    const formData = document.querySelectorAll('.form-data textarea, .form-data button, .form-data .file__btn, .form-data btn-emoji')
     createAlert(divAlert, message, typeAlert, formData)
-})
+});
 // *************************************************************
-btnChat.addEventListener('click', (e)=>{
-    formdataSubmit(e, chatMessage)
-})
-function formdataSubmit(e, element){
-    e.preventDefault()
-    if(element instanceof HTMLElement){
-        if(element.value.trim() === ''){
-            element.style.overflowY = 'hidden'
-            element.value = ''
-            element.style.height = '40px'
-            element.classList.add('chat-message--null')
-            setTimeout(()=>{
-                element.classList.remove('chat-message--null')
-            }, 1000)
-            return
-        }
-        else{
-            emojiActions.classList.remove('emoji--show--active')
-            socket.emit('chat:message',{
-                user: chatUsername.value,
-                message: element.value,
-                zonaHoraria: zonaActual
-            })
-            element.value = ''
-            element.style.height = '40px';
-            element.scrollTop = element.scrollHeight
-            // esconder el boton de enviar mensaje:
-            compare.toggleClass()
-        }
+// btnChat.addEventListener('click', (e)=>{
+//     formdataSubmit(e, chatMessage)
+// })
+class ChatDownload {
+    constructor(ancla, btnArea){
+        this.strClass = 'files-link'
+        this.donwload = ancla
+        this.btnArea = btnArea
+    }
+    donwloadHandler(){
+        this.donwload.click();
+    }
+    init(){
+        this.btnArea.addEventListener('click', ()=>this.donwloadHandler())
     }
 }
+
 // Escuchar eventos del servidor
-// problemas aqui
 socket.on('chat:message', (data)=>{
     const sendMe = (data.from === socket.id.slice(0, 6)) ? 'Yo' : data.user
     const messageClass = (sendMe === 'Yo') ? 'chat-me' : 'chat-other'
+    const clearMsg = data.message.trim()
+    console.log(clearMsg);
+    const formatMSG = messageURL(clearMsg)
+    console.log(formatMSG);
     chatAction.innerHTML = ''
     chatGlobal.innerHTML += `
         <div class="${messageClass} chat-users">
             <strong>~${sendMe}~</strong>
-            <span class="chat-mensaje">${data.message.trim()}</span>
-            <span class="chat-time">${data.fecha} - ${data.time}</span>
+            <div class="chat-msg">
+                <span class="chat-mensaje">${formatMSG}</span>
+                <span class="chat-time">${data.fecha} - ${data.time}</span>
+            </div>
         </div>
     `;
     chatGlobal.scrollTop = chatGlobal.scrollHeight
+})
+socket.on('chat:sendFile', (data) =>{
+    const sendMe = (data.from === socket.id.slice(0, 6)) ? 'Yo' : data.user
+    const msgClass = (sendMe === 'Yo') ? 'chat-me' : 'chat-other'
+    
+    // const blob = new Blob([data.bin], {type: data.type})
+    // const url = URL.createObjectURL(blob)
+    // const urlFile = url
+    chatAction.innerHTML = ''
+    chatGlobal.innerHTML += `
+        <div class="${msgClass} chat-users">
+            <strong>~${sendMe}~</strong>
+            <div class="chat-files" role="button">
+                <a class="files-link" href="#" target="_blank" download="${data.name}"></a>
+                <div class="files--img">
+                    <img src="${data.icon}" alt="Netchat-IO/image-${data.strtype}}">
+                </div>
+                <div class="files-data">
+                    <h4 class="files-name">${data.name}</h4>
+                    <p class="files-types">
+                        <span>${String(data.strtype).toUpperCase()}</span>
+                        <span>${data.size}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="chat-msg">
+                <span class="chat-mensaje">${data.msg.trim()}</span>
+                <span class="chat-time">${data.fecha} - ${data.hora}</span>
+            </div>
+        </div>
+    `;
+    const ancla = chatGlobal.querySelector('.chat-files .files-link')
+    console.log(ancla);
+    const ariaBtn = chatGlobal.querySelector('.chat-files')
+    const donwloadActions = new ChatDownload(ancla, ariaBtn)
+    donwloadActions.init()
+    console.log(data);
 })
 socket.on('chat:sendfiles:off', data=>{
     chatAction.innerHTML = `

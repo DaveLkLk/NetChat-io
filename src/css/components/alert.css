@@ -3,11 +3,14 @@
     /* COLORES DE ALERTA */
     --alert-clr-principal: #040404bc;
     --alert-clr-secundario: #ffffffea;
-    --alert-bg-info: #a19c02;
+    /* CLASES DE ALERTA*/
+    --alert-bg-info: #e9e220;
+    --alert-bg-temp: #574ae4;
     --alert-bg-error: #e81818b9;
     --alert-bg-success: #22ab1dc6;
     --alert-bg-wait: #3871dc97;
     --alert-bg-fatal: #000000;
+
     --clr-alert: var(--alert-clr-principal);
     --clr-alert-2: var(--alert-clr-secundario);
     --clr-alert-3: #e81818;
@@ -17,6 +20,7 @@
     --alert-shadow-4: #b30404bf;
     --alert-btn-bg: var(--alert-clr-principal);
     --alert-clr-btn: #ffffffdd;
+    
     --alert-shadow-btn-1: #e1e1e1d0;
     --alert-shadow-btn-2: #3c3c3cbf;
     --alert-w: 50px;
@@ -61,6 +65,10 @@
 }
 .alert--success{
     background: var(--alert-bg-success);
+    color: var(--clr-alert-2);
+}
+.alert--temp{
+    background: var(--alert-bg-temp);
     color: var(--clr-alert-2);
 }
 

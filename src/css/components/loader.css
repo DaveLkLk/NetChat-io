@@ -1,0 +1,141 @@
+/* LOADER ACTIVE */
+.loader{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* AJUSTA EL BACKGROUND A COMODIDAD */
+    background: transparent;
+
+    --clr-1: #b883f8;
+    --clr-2: #b47af3;
+    --clr-3: #ad5bf4;
+    --clr-4: #954dee;
+    --clr-5: #8b40d7;
+    --clr-6: #7d3ac8;
+    --size: 200px;
+    --shadow-1: #a037f6aa;
+    --shadow-2: #b968f7a8;
+}
+.loader .circle{
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-radius: 50%;
+    background-color: none;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+/* AJUSTES GENERALES */
+.loader .circle:first-child:before,
+.loader .circle:first-child:after,
+.loader .circle:last-child:before,
+.loader .circle:last-child:after{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-radius: 50%;
+    box-shadow: inherit;
+}
+/* PRIMER CIRCULO */
+.loader .circle:first-child{
+    width: var(--size);
+    height: var(--size);
+    border-width: 3px;
+    border-color: var(--clr-1);
+    animation-name: horario;
+    animation-duration: 3.5s;
+}
+/* SEGUNDO CIRCULO */
+.loader .circle:last-child{
+    width: calc(var(--size) - calc(var(--size) * 0.07));
+    height: calc(var(--size) - calc(var(--size) * 0.07));
+    border-color: var(--clr-2);
+    border-width: 5px;
+    animation-name: anti-horario;
+    animation-duration: 3.5s;
+    animation-direction: reverse;
+    animation-delay: -0.5s;
+}
+/* TERCER CIRCULO */
+.loader .circle:first-child:before{
+    width: calc(var(--size) - calc(var(--size) * 0.25));
+    height: calc(var(--size) - calc(var(--size) * 0.25));
+    border-color: var(--clr-3);
+    border-width: 3px;
+}
+/* CUARTO CIRCULO */
+.loader .circle:last-child:before{
+    width: calc(var(--size) - calc(var(--size) * 0.30));
+    height: calc(var(--size) - calc(var(--size) * 0.30));
+    border-color: var(--clr-4);
+    border-width: 2px;
+}
+/* QUINTO CIRCULO */
+.loader .circle:first-child:after{
+    width: calc(var(--size) - calc(var(--size) * 0.40));
+    height: calc(var(--size) - calc(var(--size) * 0.40));
+    border-color: var(--clr-5);
+    border-width: 3px;
+}
+/* SEXTO CIRCULO */
+.loader .circle:last-child:after{
+    width: calc(var(--size) - calc(var(--size) * 0.55));
+    height: calc(var(--size) - calc(var(--size) * 0.55));
+    border-color: var(--clr-6);
+    border-width: 1px;
+}
+
+/* CLASES DE JAVASCRIPT */
+.loader--hide{
+    display: none;
+}
+.loader--hide .circle{
+    animation: none;
+}
+
+@keyframes horario{
+    0%{
+        opacity: 0;
+        transform: rotate(0) scale(0.2);
+    }
+    4%{
+        opacity: 0;
+        transform: scale(0.2) rotate(90deg);
+        box-shadow: 0 0 25px var(--shadow-1);
+    }
+    5%{
+        transform: rotate(360deg) scale(0.2);
+        opacity: 1;
+    }
+    100%{
+        transform: rotate(0deg) scale(1.5);
+        opacity: 0;
+    }
+}
+@keyframes anti-horario{
+    0%{
+        transform: rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+    4%{
+        transform: rotate(360deg) scale(0.5);
+        opacity: 0;
+        box-shadow: 0 0 25px var(--shadow-2);
+    }
+    5%{
+        opacity: 1;
+        transform: scale(0.5) rotate(90deg);
+    }
+    100%{
+        opacity: 0;
+        transform: rotate(0) scale(1.5);
+    }
+}

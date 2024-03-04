@@ -1,0 +1,131 @@
+[
+    {
+      "slug": "grinning-face",
+      "character": "\ud83d\ude00",
+      "unicodeName": "grinning face",
+      "codePoint": "1F600",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "grinning-face-with-big-eyes",
+      "character": "\ud83d\ude03",
+      "unicodeName": "grinning face with big eyes",
+      "codePoint": "1F603",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "grinning-face-with-smiling-eyes",
+      "character": "\ud83d\ude04",
+      "unicodeName": "grinning face with smiling eyes",
+      "codePoint": "1F604",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "beaming-face-with-smiling-eyes",
+      "character": "\ud83d\ude01",
+      "unicodeName": "beaming face with smiling eyes",
+      "codePoint": "1F601",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "grinning-squinting-face",
+      "character": "\ud83d\ude06",
+      "unicodeName": "grinning squinting face",
+      "codePoint": "1F606",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "grinning-face-with-sweat",
+      "character": "\ud83d\ude05",
+      "unicodeName": "grinning face with sweat",
+      "codePoint": "1F605",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "rolling-on-the-floor-laughing",
+      "character": "\ud83e\udd23",
+      "unicodeName": "rolling on the floor laughing",
+      "codePoint": "1F923",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "face-with-tears-of-joy",
+      "character": "\ud83d\ude02",
+      "unicodeName": "face with tears of joy",
+      "codePoint": "1F602",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "slightly-smiling-face",
+      "character": "\ud83d\ude42",
+      "unicodeName": "slightly smiling face",
+      "codePoint": "1F642",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "upside-down-face",
+      "character": "\ud83d\ude43",
+      "unicodeName": "upside-down face",
+      "codePoint": "1F643",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "winking-face",
+      "character": "\ud83d\ude09",
+      "unicodeName": "winking face",
+      "codePoint": "1F609",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "smiling-face-with-smiling-eyes",
+      "character": "\ud83d\ude0a",
+      "unicodeName": "smiling face with smiling eyes",
+      "codePoint": "1F60A",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "smiling-face-with-halo",
+      "character": "\ud83d\ude07",
+      "unicodeName": "smiling face with halo",
+      "codePoint": "1F607",
+      "group": "smileys-emotion",
+      "subGroup": "face-smiling"
+    },
+    {
+      "slug": "smiling-face-with-hearts",
+      "character": "\ud83e\udd70",
+      "unicodeName": "smiling face with hearts",
+      "codePoint": "1F970",
+      "group": "smileys-emotion",
+      "subGroup": "face-affection"
+    },
+    {
+      "slug": "smiling-face-with-heart-eyes",
+      "character": "\ud83d\ude0d",
+      "unicodeName": "smiling face with heart-eyes",
+      "codePoint": "1F60D",
+      "group": "smileys-emotion",
+      "subGroup": "face-affection"
+    },
+    {
+      "slug": "star-struck",
+      "character": "\ud83e\udd29",
+      "unicodeName": "star-struck",
+      "codePoint": "1F929",
+      "group": "smileys-emotion",
+      "subGroup": "face-affection"
+    }
+   
+]

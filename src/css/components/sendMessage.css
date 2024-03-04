@@ -1,0 +1,15 @@
+.chat-btnSwitch{
+    background-color: transparent;
+    padding: 0;
+    width: var(--btn-size);
+    height: var(--btn-size);
+    cursor: pointer;
+}
+.chat-btnSwitch:hover svg{
+    fill: var(--btn-color-hover);
+}
+.chat-btnSwitch svg{
+    width: 22px;
+    height: 22px;
+    fill: var(--btn-color-hover);
+}

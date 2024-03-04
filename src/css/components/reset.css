@@ -11,10 +11,16 @@
     --bg-dark-default: #303030;
     --radius-modal: 10px;
 
-    --debug1: 1px solid red;
-    --debug2: 1px solid yellow;
-    --debug3: 1px solid orange;
-    --debug4: 1px solid white;
+    /* CAJA DE MENSAJES */
+    --chat-bg-other: #ddf087ce;
+    --chat-bg-me: #80cc8ed6;
+    --chat-bg-files: #6b6b6b83;
+    --chat-radius-files: 10px;
+    --chat-clr-title: #363636;
+    --chat-clr-txt: #000000;
+    --chat-clr-time: #3b3b3b;
+    --chat-padding: .4em .6em .4em 1em;
+    --chat-padding-txt: .5em;
 }
 
 *, *:before, *:after{

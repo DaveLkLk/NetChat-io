@@ -1,0 +1,28 @@
+.chat-message{
+    border-radius: var(--radius-modal);
+    overflow-y: hidden;
+    padding: 10px;
+    border: transparent solid 1px;
+    font-size: 15px;
+    width: 100%;
+    resize: none;
+    min-height: 40px;
+    max-height: 160px;
+    transition: height .3s ease-in-out;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    background: #303030;
+}
+.chat-message--null{
+    animation: infinite .3s linear bordered;
+}
+.chat-message::placeholder{
+    font-size: 15px;
+}
+.chat-message::-webkit-scrollbar{
+    width: 10px;
+}
+.chat-message--scroll::-webkit-scrollbar-thumb{
+    background: #55ad98;
+    border-radius: 10px;
+}

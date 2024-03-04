@@ -1,18 +1,18 @@
-.insert-emoji .btn-emoji{
+.btn-emoji{
     padding: 0;
     cursor: pointer;
 }
-.insert-emoji svg.emoji-svg{
+svg.emoji-svg{
     fill-rule: evenodd;
     width: 22px;
     height: 22px;
     fill: var(--btn-color-hover);
 }
-.insert-emoji .btn-emoji--active svg{
-    filter: drop-shadow(0 0 5px #9760e5);
+.btn-emoji--active svg{
+    filter: drop-shadow(0 0 1px #9760e5);
 }
 
-.insert-emoji .emoji--show{
+.emoji--show{
     --position: 350px;
     transform-origin: bottom left;
     transform: scale(0);
@@ -66,10 +66,10 @@
 .emoji--show .emoji-group{
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 5px;
     gap: 5px;
     overflow: hidden;
-    background: var(--bg-dark-default);
+    /* background: var(--bg-dark-default); */
     border-radius: var(--radius-modal);
 }
 .emoji-group button{
@@ -81,7 +81,7 @@
 }
 .emoji-group button img{
     pointer-events: none;
-    filter: invert(47%) sepia(80%) saturate(2847%) hue-rotate(191deg) brightness(105%) contrast(101%);
+    filter: invert(35%) ;
     transition: filter .3s ease-in-out;
 }
 .emoji-group .btn__group:hover img,
