@@ -1199,9 +1199,7 @@ socket.on('chat:message', (data)=>{
     const sendMe = (data.from === socket.id.slice(0, 6)) ? 'Yo' : data.user
     const messageClass = (sendMe === 'Yo') ? 'chat-me' : 'chat-other'
     const clearMsg = data.message.trim()
-    console.log(clearMsg);
     const formatMSG = messageURL(clearMsg)
-    console.log(formatMSG);
     chatAction.innerHTML = ''
     chatGlobal.innerHTML += `
         <div class="${messageClass} chat-users">

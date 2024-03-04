@@ -374,18 +374,11 @@ export function messageURL(message){
     let partsMessage = Array.from(message.split(urlRgx))
     let msgURL = ''
 
-    console.log(partsMessage);
-
     partsMessage.forEach((item, i) =>{
         if(i % 2 === 1){
             msgURL += `<a class="chat-url" href="${partsMessage[i]}" target="_blank">${partsMessage[i]}</a>`;
-            
-            console.log(msgURL);
         }else{
             msgURL += partsMessage[i]
-
-            console.log(msgURL);
-
         }
     })
     return msgURL
