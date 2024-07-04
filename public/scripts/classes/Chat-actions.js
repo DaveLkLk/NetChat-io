@@ -1,6 +1,12 @@
 import { getData } from "../socket-client/chat-request.js";
+import { createLoader } from "../../js/components/elements-html.js";
+import { ChatSendMessage } from "../../js/app.js";
+import { typesFile } from "../socket-client/chat-types.js";
+import { createPreviewContent } from "../socket-client/chat-types.js";
 // const EMOJI_LIST = 'https://emoji-api.com/emojis?access_key=93466aec4d6b52c2ac784009561974d49b0a87a9';
 const EMOJI_LIST = './db/emojis.json';
+const previewContent = document.querySelector('.chat-preview')
+
 
 export class Chat {
     constructor(getUser, username, modal, containerUser, containerChat, item, btnclose, formuser, changeusername){

@@ -93,8 +93,6 @@ compare.init()
 // **********************************************************************
 // **********************************************************************
 
-
-
 const formGroupActions = document.querySelector('.form__group-actions')
 const emojiDefault = new chatEmoji(formGroupActions)
 emojiDefault.init()
@@ -107,9 +105,6 @@ emojiDefault.init()
 // ******************************************************************************
 // INICIAN LOS SOCKETS
 const socket = io();
-
-const previewContent = document.querySelector('.chat-preview')
-
 
 
 const fileBtn = document.querySelector('.file__btn button')
@@ -139,7 +134,7 @@ fileTypes.forEach((element, i) => {
 });
 
 
-class ChatSendMessage {
+export class ChatSendMessage {
     constructor (textarea, emjshow, btnSendMsg){
         this.dataUrl = null
         this.data = null
