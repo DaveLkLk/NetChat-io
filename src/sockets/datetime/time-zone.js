@@ -16,4 +16,4 @@ function getTimeZoneClient(timeZone){
 
     return { fecha, hora }
 }
-export default getTimeZoneClient;
+module.exports = getTimeZoneClient

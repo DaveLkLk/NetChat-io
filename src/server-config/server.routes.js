@@ -1,19 +1,19 @@
-import { path } from './server.config.js';
-import { writeFile } from 'fs/promises'
-import { Router } from 'express';
+const { Router } = require('express')
+const { writeFile } = require('fs/promises')
+const path = require('path')
 const router = Router();
 
 router.get('/', (req, res)=>{
-    const pathIni = path.join(__dirname, 'src', 'index.html')
+    const pathIni = path.join(__dirname, 'public', 'index.html')
     res.status(200).sendFile(pathIni)
 })
 router.get('/home', (req, res)=>{
-    const pathHome = path.join(__dirname, 'src', 'pages', 'home.html')
+    const pathHome = path.join(__dirname, 'public', 'pages', 'home.html')
     res.sendFile(pathHome)
 })
 router.put('/home', async(req, res)=>{
     try{
-        const pathPut = path.join(__dirname, 'src', 'db', 'semana.json')
+        const pathPut = path.join(__dirname, 'public', 'db', 'semana.json')
         const newData = req.body;
         const oldData = require(pathPut)
         const sendData = {...oldData, ...newData}
@@ -26,8 +26,4 @@ router.put('/home', async(req, res)=>{
         res.status(500).send('Error al actualizar los datos')
     }
 });
-router.post('/chat-upload', (req, res) => {
-    
-})
-
-export default router;
+module.exports = router;
