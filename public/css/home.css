@@ -1,0 +1,51 @@
+@import url(components/reset.css);
+@import url(components/alert.css);
+
+body{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui;
+}
+
+.header-home{
+    max-width: 40rem;
+    margin: auto;
+    display: grid;
+    gap: .5rem;
+    padding: 1rem;
+}
+.header-home h3{
+    text-align: center;
+    text-wrap: balance;
+    color: #8b8b8b;
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: normal;
+}
+.header-home h1{
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+
+    text-wrap: balance;
+}
+.header-home label{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    --size: 25px;
+}
+.header-home input{
+    border: 1px solid #424242;
+    border-radius: 20px;
+    padding: .8rem 2rem;
+    font-size: 1rem;
+}
+.header-home label svg{
+    width: var(--size);
+    height: var(--size);
+}
