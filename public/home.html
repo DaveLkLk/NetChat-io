@@ -8,20 +8,28 @@
     <title>Bienvenido a Netch@t IO</title>
 </head>
 <body>
-    <div class="container-particles">
-        <div class="particles"></div>
-    </div>
+    <div id="particles-js"></div>
     <header class="header-home">
-        <h3>Chatea de forma rápida y sencilla</h3>
-        <h1>Accede al Chat en un Clic Rápido, Seguro y Sin Registro!</h1>
-        <label for="username-ini">
-            <input id="username-ini" type="text" placeholder="nombre de usuario">
-            <button type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                  </svg>
-            </button>
-        </label>
+        <div class="header-lightning">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge-fill" viewBox="0 0 16 16">
+                <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
+              </svg>
+        </div>
+        <div class="header-content">
+            <h3>Rápido, Seguro y Sin Registro</h3>
+            <h1>Bienvenido a Netch@t IO Accede al Chat en un Clic</h1>
+            <form class="header-home-form" id="form-login">
+                <input id="username-ini" type="text" placeholder="ingresa tu usuario a Netch@t IO" autocomplete="off">
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                      </svg>
+                </button>
+            </form>
+        </div>
     </header>
+
+    <script src="./db//particles.js"></script>
+    <script type="module" src="./js/particles-canvas.js"></script>
 </body>
 </html>
