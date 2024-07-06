@@ -264,7 +264,7 @@ sendMessageIni.init()
 btnAudio.addEventListener('click', ()=>{
     const message = MESSAGE_TYPE.NO_DISPONIBLE
     const typeAlert = ALERT_TYPE.INFO
-    createAlert(divAlert, message, typeAlert, formData)
+    createAlert(divAlert, '',message, typeAlert, formData)
 });
 // *************************************************************
 // btnChat.addEventListener('click', (e)=>{

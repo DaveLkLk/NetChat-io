@@ -1,4 +1,52 @@
+import { iconClose, iconErrorServer, iconSuccess, iconInfo, iconError, iconWaiting } from "./elements-html.js";
 // CSS ALERT
+const OBJ_ALERT_ICON = {
+    INFO: {
+        classname: 'alert--info',
+        value: 'WARNING',
+        icon: iconInfo
+    },
+    ERROR: {
+        classname: 'alert--error',
+        value: 'ERROR:',
+        icon: iconError
+    },
+    SUCCESS: {
+        classname: 'alert--success',
+        value: 'SUCCESS',
+        icon: iconSuccess
+    },
+    FATAL: {
+        classname: 'alert--fatal',
+        value: 'FATAL ERROR:',
+        icon: iconErrorServer
+    },
+    TEMP_DEFAULT: {
+        classname: 'alert--temp-default',
+        value: 'LOADING:',
+        icon: iconWaiting
+    },
+    TEMP_INFO: {
+        classname: 'alert--temp-info',
+        value: 'FATAL ERROR:',
+        icon: iconInfo
+    },
+    TEMP_ERROR: {
+        classname: 'alert--temp-error',
+        value: 'FATAL ERROR:',
+        icon: iconError
+    },
+    TEMP_SUCCESS: {
+        classname: 'alert--temp-success',
+        value: 'SUCCESS:',
+        icon: iconSuccess
+    }
+}
+function getIconTypeAlert(classname){
+    const isClassAlert = Object.values(OBJ_ALERT_ICON).find(i => i.classname === classname)
+    if(!isClassAlert) return console.log('No se reconoce la clase de alerta')
+    return isClassAlert
+}
 export const ALERT_TYPE = {
     INFO: "alert--info",
     ERROR: "alert--error",
@@ -6,7 +54,12 @@ export const ALERT_TYPE = {
     SUCCESS: "alert--success",
     FATAL: "alert--fatal",
     ACTIVE: "alert--active",
-    TEMP: "alert--temp"
+    TEMP: {
+      default: "alert--temp-default",
+      info: "alert--temp-info",
+      error: "alert--temp-error",
+      success: "alert--temp-success",
+    }
 }
 export const MESSAGE_TYPE = {
     // server message
@@ -20,24 +73,37 @@ export const MESSAGE_TYPE = {
     WAIT_GET: "Esperando respuesta del servidor..",
     // client message
     ALERT: 'Complete todos los campos',
-    MIN_SCREEN: 'Tamaño de pantalla no recomendable',
-    MAX_SCREEN: 'Tamaño de pantalla fuera del limite',
     ERROR: 'Ocurrió un error',
-    NO_DISPONIBLE: 'Feature coming soon..',
-    ERROR_FILES: 'Error al cargar el archivo',
-    ERROR_TYPE_FILE: 'Tipo de archivo no válido en esta opción',
-    ERROR_FORMAT: 'Error al procesar el formato de archivo',
-    ERROR_PREVIEW: 'Error, no se pudo cargar la vista previa',
-    PROCESS_MAXMEDIA: 'Archivo pesado, esto podria tardar unos minutos..',
+    ERROR_PASTE: 'Error al leer el portapapeles',
+    NO_DISPONIBLE: 'Característica no agregada..',
     INVALIDO: 'El resgistro ingresado no es válido',
     DUPLICADO: 'Este registro ya existe!',
     SUCCESS: 'Datos guardados satisfactoriamente!',
     NO_SELECT: 'Seleccione una opción!',
     ESPERANDO: 'Procesando solicitud...',
+    IN_PROCESS: 'Módulo en proceso...',
     LOADING: 'Cargando datos...',
     CLAVE_INVALID: 'Contraseña inválida',
-    CLAVE_VALID: 'ContraseÑa correcta',
-    NO_EXISTE: 'No se encontró ningún registro'
+    LOGIN: 'Inicio de sesion exitoso',
+    CLAVE_VALID: 'Contraseña correcta',
+    NO_EXISTE: 'No se encontró ningún registro',
+    COPY: 'Texto copiado!',
+    COPY_NULL: 'Nada que copiar..',
+    CLEAR_NULL: 'Nada que limpiar..',
+    FORM_CLEAR: 'Formulario limpiado!',
+    PASTE_ACCESS: 'Permita el Acceso al portapapeles',
+    LOCK_STYLES: 'Estilos bloqueado',
+    UNLOCK_STYLES: 'Estilos desbloqueado',
+    PIN_SUCCESS: 'Elemento fijado',
+    PIN_ERROR: 'Error al intentar fijar el elemento',
+    SEARCH_DINAMYC: 'Búsqueda dinámica activada',
+    SEARCH_ANEXO: 'Búsqueda por anexo activado'
+};
+function setClassTemp(arrClass){
+    const classTempArr = Array.from(arrClass).filter(clase => clase.startsWith('alert--temp'));
+    if(classTempArr.length > 0){
+      classTempArr.forEach(clase => arrClass.remove(clase))
+    }
 };
 export function borrarContenido(arr){
     arr.forEach(item => {
@@ -60,37 +126,94 @@ export function inputEnabled(items){
         item.style.cursor = 'pointer'
     })
 };
-export function createAlert(container, message, classAlert, elementsForm){
+function templateAlert(container){
+    const alertMsg = document.createElement('div')
+    const alertClose = document.createElement('div')
+    alertMsg.classList.add('alert-message')
+    alertClose.classList.add('alert-close')
+    const spanIcon = document.createElement('span')
+    spanIcon.classList.add('alert-icon')
+    const alertResponse = document.createElement('p')
+    alertResponse.classList.add('alert-response')
+    const alertTitle = document.createElement('span')
+    const alertDescription = document.createElement('span')
+    alertTitle.classList.add('alert-title')
+    alertDescription.classList.add('alert-description')
+    alertResponse.appendChild(alertTitle)
+    alertResponse.appendChild(alertDescription)
+    alertMsg.appendChild(spanIcon)
+    alertMsg.appendChild(alertResponse)
+    const button = document.createElement('button')
+    button.classList.add('btn-close')
+    button.type = 'button'
+    button.title = 'Cerrar'
+    button.innerHTML = iconClose();
+    alertClose.appendChild(button)
+    container.appendChild(alertMsg)
+    container.appendChild(alertClose)
+    const objTemplate = {
+        container,
+        span_icon: container.querySelector('.alert-message .alert-icon'),
+        alert_title: container.querySelector('.alert-response .alert-title'),
+        alert_description: container.querySelector('.alert-response .alert-description'),
+        btn_close: container.querySelector('.alert-close .btn-close'),
+    }
+    return objTemplate
+}
+
+export function createAlert(container, title, description, classAlert, elementsForm, timeTemp=3000){
     inputDisabled(elementsForm)
     const alert = container
-    
-    const buttonExiste = document.querySelector('.alert button')
-    const messageExiste = document.querySelector('.alert p')
-    if(buttonExiste && messageExiste){
-        alert.innerHTML = ''
-    }
+    const alertMsgExist = document.querySelector('.alert-message')
+    const alertCloseExist = document.querySelector('.alert-close')
+    if(alertMsgExist && alertCloseExist) alert.innerHTML = '';
+
+    // const buttonExiste = document.querySelector('.alert button')
+    // const messageExiste = document.querySelector('.alert p')
+    const template = templateAlert(alert)
+    // if(buttonExiste && messageExiste) alert.innerHTML = '';
     alert.classList.add(ALERT_TYPE.ACTIVE)
+    setClassTemp(alert.classList)
     alert.classList.add(classAlert)
 
-    const buttonAlert = document.createElement('button')
-    buttonAlert.textContent = 'X'
-    buttonAlert.type = 'button'
-    const messageAlert = document.createElement('p')
-    messageAlert.textContent = message
-    alert.appendChild(messageAlert)
-    alert.appendChild(buttonAlert)
-
+    const alertElement = getIconTypeAlert(classAlert)
+    !title 
+        ? template.alert_title.textContent = alertElement.value
+        : template.alert_title.textContent = title
+    !description
+        ? template.alert_description.textContent = ''
+        : template.alert_description.textContent = description
+    template.span_icon.innerHTML = alertElement.icon()
+    const btnClose = template.btn_close
+    // const buttonAlert = document.createElement('button')
+    // buttonAlert.textContent = 'X'
+    // buttonAlert.type = 'button'
+    // const messageAlert = document.createElement('p')
+    // messageAlert.textContent = message
+    // alert.appendChild(messageAlert)
+    // alert.appendChild(buttonAlert)
+    // CONTROLAR EL TIMEOUT DE LAS ALERTAS
+    let timeOutID;
+    let timeOutIDTwo;
+    if(Object.values(ALERT_TYPE.TEMP).includes(classAlert)){
+        inputEnabled(elementsForm)
+        timeOutID = setTimeout(() => {
+            alert.classList.remove(ALERT_TYPE.ACTIVE)
+            timeOutIDTwo = setTimeout(()=>{
+                alert.classList.remove(classAlert)
+            }, timeTemp + 300)
+        }, timeTemp)
+    }
     function alertHandler(){
         inputEnabled(elementsForm)
         alert.classList.remove(ALERT_TYPE.ACTIVE)
+        // LIMPIAR LOS SETTIMEOUT
+        if(timeOutID) clearTimeout(timeOutID)
+        if(timeOutIDTwo) clearTimeout(timeOutIDTwo)
         setTimeout(()=>{
             alert.classList.remove(classAlert)
-        }, 310)
+        }, 350)
         console.log("mostrarAlerta -> success");
     }
-    if(classAlert === ALERT_TYPE.TEMP){
-        setTimeout(alertHandler, 3000)
-    }
-    
-    buttonAlert.addEventListener('click', alertHandler)
+    btnClose.addEventListener('click', alertHandler)
 };
