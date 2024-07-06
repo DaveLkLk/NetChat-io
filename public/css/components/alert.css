@@ -1,0 +1,192 @@
+/* ALERTAS EN EL DOM */
+:root{
+    /* COLORES DE ALERTA */
+    --alert-bg: #303030;
+    --alert-radius: 15px;
+    --alert-gap: 1rem;
+    --alert-max-w: 550px;
+    --alert-padding: 1rem;
+    --alert-shadow: 0 0 10px #111111c0;
+    --alert-shadow-fatal: 0 0 10px #000000;
+  /* colores de clases de alerta */
+    --alert-clr-info: #ddbe35;
+    --alert-clr-error: #c25555;
+    --alert-clr-success: #39a751;
+    --alert-clr-wait: #3871dc97;
+    --alert-clr-fatal: #000000;
+    --alert-clr-temp: #6366f1;
+  /* colores adicionales */
+    --clr-description: #888888;
+    --clr-btn-close: #888888;
+    --clr-btn-close-hover: #eeeeee;
+    --size-icon: 22px;
+    --size-btn-close: 20px;
+}
+.alert{
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 550px;
+    padding: var(--alert-padding);
+    gap: var(--alert-gap);
+    top: -100px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background: var(--alert-bg);
+    color: var(--clr-alert);
+    transition: top .3s ease-in, background .3s, color .3s;
+    border-radius: var(--alert-radius);
+    box-shadow: var(--alert-shadow);
+}
+.alert--active{
+    top: 50px;
+}
+.alert--info{
+    --clr-alert: var(--alert-clr-info)
+}
+.alert--error{
+    --clr-alert: var(--alert-clr-error);
+}
+.alert--success{
+    --clr-alert: var(--alert-clr-success);
+}
+/* AJUSTES EN ALERTA TEMPORAL */
+.alert--temp-success{
+    --clr-alert: var(--alert-clr-success);
+}
+.alert--temp-default{
+  --clr-alert: var(--alert-clr-temp);
+}
+.alert--temp-info{
+  --clr-alert: var(--alert-clr-info);
+}
+.alert--temp-error{
+  --clr-alert: var(--alert-clr-error);
+}
+
+/* ----------------------------------------------------- */
+.alert-message{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-flow: row;
+    gap: .5rem;
+    --w: var(--size-icon);
+}
+.alert-icon svg{
+    fill: var(--clr-alert);
+    width: var(--w);
+    height: var(--w);
+}
+.alert-message .alert-response{
+    display: inline-block;
+}
+.alert-message .alert-title{
+    color: var(--clr-alert);
+    font-weight: bold;
+    width: max-content;
+    text-wrap: nowrap;
+    margin-right: 5px;
+}
+.alert-message .alert-description{
+    color: var(--clr-description);
+}
+.alert-close{
+    height: max-content;
+    display: flex;
+    align-items: center;
+}
+.alert-close .btn-close{
+    background: transparent;
+    transition: transform .2s ease-in;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    --size: var(--size-btn-close);
+    --fill: var(--clr-btn-close);
+}
+.alert-close .btn-close:hover{
+    --fill: var(--clr-btn-close-hover);
+    transform: scale(0.980);
+}
+.alert-close .btn-close svg{
+    width: var(--size);
+    height: var(--size);
+    pointer-events: none;
+    fill: var(--fill);
+    transition: fill .2s linear;
+  }
+/* TIPOS DE ALERTA */
+.alert--fatal{
+    box-shadow: var(--alert-shadow-fatal);
+    --clr-alert: var(--alert-clr-fatal);
+}
+
+
+.alert--wait{
+    background-color: var(--alert-bg-wait);
+    color: var(--clr-alert-2);
+}
+  .alert--wait button{
+      background: transparent;
+      box-shadow: none;
+      color: transparent;
+      pointer-events: none;
+  }
+  .alert--wait button:hover{
+      transform: scale(1);
+  }
+  .alert--wait button:before{
+      position: absolute;
+      content: '';
+      inset: 0;
+      margin: auto;
+      width: 75%;
+      height: 75%;
+      border-radius: 50%;
+      border: 1px solid rgb(236, 236, 236);
+      animation: escala-2 3s  infinite linear;
+  }
+  .alert--wait button:after{
+      position: absolute;
+      content: '';
+      inset: 0;
+      margin: auto;
+      width: 60%;
+      height: 60%;
+      border-radius: 50%;
+      border: 1px solid rgb(255, 255, 255);
+      animation: escala reverse 3s infinite linear;
+  }
+
+/* Animaciones de alerta */
+@keyframes escala-2{
+    0%, 100%{
+        opacity: 1;
+        transform: scale(1.3);
+    }
+    50%{
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+@keyframes escala{
+    0%, 100%{
+        opacity: 0;
+        transform: scale(0);
+    }
+    50%{
+        opacity: 1;
+        transform: scale(1.4);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .alert{
+        max-width: 90%;
+    }
+}

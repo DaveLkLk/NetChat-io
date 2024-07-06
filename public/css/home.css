@@ -1,0 +1,142 @@
+@import url(components/reset.css);
+@import url(components/alert.css);
+
+body{
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui;
+    overflow: hidden;
+}
+#particles-js{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.header-home{
+    position: relative;
+    z-index: 1;
+    max-width: 40rem;
+    margin: auto;
+    display: grid;
+    gap: .5rem;
+    padding: 1rem;
+}
+/* ICONO GRANDE */
+.header-home .header-lightning{
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --size: 60vh;
+    --fill: #6321cc36;
+}
+.header-home .header-lightning svg{
+    width: var(--size);
+    height: var(--size);
+    fill: var(--fill);
+    transition: width .2s linear, height .2s linear;
+    animation: svgLogo 5s infinite, rotateIcon infinite 10s backwards;
+}
+.header-content{
+    position: relative;
+    z-index: 2;
+    user-select: none;
+}
+.header-home h3{
+    text-align: center;
+    text-wrap: balance;
+    color: #8b8b8b;
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+.header-home h1{
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    text-wrap: balance;
+}
+.header-home form{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    --size: 30px;
+}
+.header-home input{
+    --clr: #424242;
+    border: 1px solid var(--clr);
+    color: var(--clr);
+    background: #181818d8;
+    border-radius: 20px;
+    padding: .8rem 2rem .8rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 20rem;
+    transition: color .3s linear, border .3s linear;
+}
+.header-home input:hover{
+    --clr: #949494;
+}
+.header-home form button{
+    background: #303030b9;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    --fill: #696969;
+    transition: background .3s linear;
+}
+.header-home form button:hover{
+    --fill: #101010;
+    background: #ffffffe3;
+}
+.header-home form svg{
+    width: var(--size);
+    height: var(--size);
+    fill: var(--fill);
+    transition: fill .2s linear;
+}
+
+@keyframes svgLogo {
+    0%, 100%{
+        filter: drop-shadow(0 0 5px #0e0edbd7) drop-shadow(0 0 2px #dfdfdf9f);
+    }
+    50%{
+        filter: drop-shadow(0 0 5px #361ab6b9) drop-shadow(0 0 2px #9292926c);
+    }
+}
+@keyframes rotateIcon {
+    0%, 100%{
+        transform: rotate(0);
+    }
+    40%{
+        transform: rotate(360deg);
+    }
+    60%{
+        transform: rotate(0);
+    }
+    70%{
+        transform: rotate(-15deg);
+    }
+    80%{
+        transform: rotate(0);
+    }
+    90%{
+        transform: rotate(15deg);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header-home .header-lightning{
+        --size: 250px;
+    }
+}
