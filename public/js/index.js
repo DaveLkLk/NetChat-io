@@ -12,9 +12,12 @@ const serverBtnAddRoom = document.querySelector('#app-addRoom')
 const serverBtnFAQ = document.querySelector('#app-faq')
 const serverFormSearchRoom = document.querySelector('.search-room-form')
 const serverInputSearch = document.querySelector('#search-room')
-const serverBtnRoomConfig = document
+//obtener aqui el click en el boton de configuracion de la sala
+// obtener aqui el click en la sala para entrar a chatear
+const serverRoomContainer = document.querySelector('.chat-server--rooms')
 // USER
 const userName = document.querySelector('#server-user-name');
+const userRename = document.querySelector('#server-user-rename')
 const userID = document.querySelector('#server-user-id');
 const btnUserConfig = document.querySelector('#server-user-config-btn')
 const btnEmoji = document.querySelector('#btn-emoji')
@@ -31,5 +34,6 @@ const chatRoomUserState = document.querySelector('#server-room-active')
 const btnRoomCall = document.querySelector('#btn-room-action-call')
 const btnRoomConfig = document.querySelector('#btn-room-action-config')
 const ulRoomConfig = document.querySelector('#room-action-config-list')
+const chatContentMessages = document.querySelector('#chat-global')
 
 
