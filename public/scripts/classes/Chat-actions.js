@@ -162,8 +162,8 @@ export class chatActions {
 export class chatEmoji {
     constructor(containerActions){
         this.textArea = containerActions.querySelector('.chat-message')
-        this.btn = containerActions.querySelector('.emoji--btn .btn-emoji')
-        this.toggle = containerActions.querySelector('.emoji--show')
+        this.btn = containerActions.querySelector('#btn-emoji')
+        this.toggle = containerActions.querySelector('#emoji--show')
         this.search = containerActions.querySelector('.emoji-search input#emoji-search')
         this.emojilist = containerActions.querySelector('.emoji-list')
         this.btngroups = containerActions.querySelectorAll('.emoji-group button')

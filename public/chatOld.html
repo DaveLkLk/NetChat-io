@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/ini.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://static-00.iconduck.com/assets.00/node-js-icon-454x512-nztofx17.png" type="image/png">
+    <title>Usuarios</title>
+</head>
+<body>
+    <div class="container">
+        <div class="alert"></div>
+        <!-- <nav class="nav" id="nav"></nav> -->
+        <!-- FALTA ARREGLAR ESTO EN LA NUEVA UI -->
+        <div class="container-user">
+            <div class="user-modal" id="user-modal">
+                <button id="btn-close" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                    </svg>
+                </button>
+                <h2><span>W</span>elcome to new <span>Chatbox</span><span>!</span></h2>
+                <hr>
+                <form action="" class="form-user" id="form-user">
+                    <div class="form__group">
+                        <label for="addUsername">Username:</label>
+                        <input type="text" id="addUsername" placeholder="your name for example.." autocomplete="off">
+                    </div>
+                    <hr>
+                    <div class="form__group">
+                        <button type="submit" class="btn-initChat">Iniciar Chat</button>
+                    </div>
+                    <em>created by @Blue_PlaNet</em>
+                </form>
+            </div>
+        </div>
+        <div class="container-chat">
+            <div class="chat-content">
+                <div class="chat-global" id="chat-global">
+                    
+                </div>
+                <div class="chat-action" id="chat-action"></div>
+                <form class="chat-form form-data">
+                    <div class="form__group">
+                        <label aria-disabled="true" for="chat-username">Username</label>
+                        <div class="fg--username">
+                            <input type="text" placeholder="username" id="chat-username" readonly>
+                            <button type="button" id="change-username" title="cambiar nombre de usuario">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form__group form__group-set">
+                        <!-- ***************************************** -->
+                        <div class="form__group-actions">
+                            <div class="fg__action fg__action--insert">
+                                <div class="insert-emoji"></div>
+                                <div class="insert-file">
+                                    <div class="file__btn" role="button">
+                                        <button type="button" id="file-btn" title="adjuntar archivos">
+                                            <svg class="file-svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" >
+                                                <path  clip-rule="evenodd" d="M20.5 13.2501L20.5 10.7501L13.25 10.7501L13.25 3.5L10.75 3.5L10.75 10.7501L3.5 10.7501L3.5 13.2501L10.75 13.2501L10.75 20.5L13.25 20.5L13.25 13.2501L20.5 13.2501Z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="file__show">
+                                        <div class="file__actions">
+                                            <div class="file__type file__multimedia" data-type="file-multimedia">
+                                                <div class="file--block file__multimediablock" data-className="file__multimediablock">
+                                                    <svg class="filetype-svg" width="20" height="20" viewBox="0 0 20 20" fill="var(--icon-color-multimedia)" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M20 14V2C20 0.9 19.1 0 18 0H6C4.9 0 4 0.9 4 2V14C4 15.1 4.9 16 6 16H18C19.1 16 20 15.1 20 14ZM9.4 10.53L11.03 12.71L13.61 9.49C13.81 9.24 14.19 9.24 14.39 9.49L17.35 13.19C17.61 13.52 17.38 14 16.96 14H7C6.59 14 6.35 13.53 6.6 13.2L8.6 10.53C8.8 10.27 9.2 10.27 9.4 10.53ZM0 18V5C0 4.45 0.45 4 1 4C1.55 4 2 4.45 2 5V17C2 17.55 2.45 18 3 18H15C15.55 18 16 18.45 16 19C16 19.55 15.55 20 15 20H2C0.9 20 0 19.1 0 18Z"></path>
+                                                    </svg>
+                                                    <span id="">Imagenes y videos</span>
+                                                    <input type="file" name="file-inp" multiple id="file--multimedia" accept="image/*,video/*,video/quicktime">
+                                                </div>
+                                            </div>
+                                            <div class="file__type file__audio" data-type="file-audio">
+                                                <div class="file--block file__audioblock" data-className="file__audioblock">
+                                                    <svg class="filetype-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="var(--icon-color-audio)" viewBox="0 0 16 16">
+                                                        <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2s2.5.896 2.5 2zm9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2z"/>
+                                                        <path fill-rule="evenodd" d="M14 11V2h1v9h-1zM6 3v10H5V3h1z"/>
+                                                        <path d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4V2.905z"/>
+                                                      </svg>
+                                                    <span>Música</span>
+                                                    <input type="file" name="file-inp" id="file--audio" accept="audio/mp3,audio/wav, audio/flac,audio/aac, audio/* ,.mp3,.aac,.wav,.flac,.ogg,.opus">
+                                                </div>
+                                            </div>
+                                            <div class="file__type file__document" data-type="file-document">
+                                                <div class="file--block file__documentblock" data-className="file__documentblock">
+                                                    <svg class="filetype-svg" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg" fill="var(--icon-color-document)">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 0C0.9 0 0.01 0.9 0.01 2L0 18C0 19.1 0.89 20 1.99 20H14C15.1 20 16 19.1 16 18V6.83C16 6.3 15.79 5.79 15.41 5.42L10.58 0.59C10.21 0.21 9.7 0 9.17 0H2ZM9 6V1.5L14.5 7H10C9.45 7 9 6.55 9 6ZM4 10C3.44772 10 3 10.4477 3 11C3 11.5523 3.44772 12 4 12H12C12.5523 12 13 11.5523 13 11C13 10.4477 12.5523 10 12 10H4ZM10 15C10 14.4477 9.55228 14 9 14H4C3.44772 14 3 14.4477 3 15C3 15.5523 3.44772 16 4 16H9C9.55228 16 10 15.5523 10 15Z" ></path>
+                                                    </svg>
+                                                    <span>Documento</span>
+                                                    <input type="file" name="file-inp" id="file--document" accept="
+                                                    text/csv,application/*,text/*">
+                                                </div>
+                                            </div>
+                                            <div class="file__type file__apps" data-type="file-apps">
+                                                <div class="file--block file__programblock" data-className="file__programblock">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="var(--icon-color-program)" class="bi bi-file-earmark-arrow-up-fill" viewBox="0 0 16 16">
+                                                        <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707L6.354 9.854z"/>
+                                                      </svg>
+                                                    <span>Archivos</span>
+                                                    <input type="file" name="file-inp" id="file--program" accept="*">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fg__action--message"></div>
+                            <div class="fg__action fg__action--switch">
+                                <div class="switch__microphone" data-toggle="switch__microphone" role="button"></div>
+                                <div class="switch__send" data-toggle="switch__send" role="button"></div>
+                            </div>
+                        </div>
+                        <!-- *************************************************** -->
+                    </div>
+                </form>
+            </div>
+            <div class="chat-preview" id="chat-preview">
+                <!-- ...  -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.js"></script>
+    <script type="module" src="./js/nav.js"></script>
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

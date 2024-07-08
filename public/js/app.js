@@ -8,15 +8,15 @@ import { createPreviewContent, typesFile, createiconImgType } from "../scripts/s
 
 const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-const insertEmoji = document.querySelector('.insert-emoji')
-    insertEmoji.appendChild(createBtnEmoji())
+const insertEmoji = document.querySelector('.form-insert--emoji')
+    // insertEmoji.appendChild(createBtnEmoji())
     insertEmoji.appendChild(createEmojiShow())
-const FGactionMessage = document.querySelector('.fg__action--message')
-    FGactionMessage.appendChild(createChatMessage())
-const switchSend = document.querySelector('.switch__send')
-    switchSend.appendChild(createBtnChat())
-const switchMicro = document.querySelector('.switch__microphone')
-    switchMicro.appendChild(createBtnMicro())
+// const FGactionMessage = document.querySelector('.fg__action--message')
+//     FGactionMessage.appendChild(createChatMessage())
+// const switchSend = document.querySelector('.switch__send')
+//     switchSend.appendChild(createBtnChat())
+// const switchMicro = document.querySelector('.switch__microphone')
+//     switchMicro.appendChild(createBtnMicro())
 
 
 const divAlert = document.querySelector('.alert')
@@ -93,8 +93,8 @@ compare.init()
 // **********************************************************************
 // **********************************************************************
 
-const formGroupActions = document.querySelector('.form__group-actions')
-const emojiDefault = new chatEmoji(formGroupActions)
+const roomFormChat = document.querySelector('#room-chat-form')
+const emojiDefault = new chatEmoji(roomFormChat)
 emojiDefault.init()
 // *****************************************
 // *****************************************
