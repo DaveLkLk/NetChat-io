@@ -36,4 +36,65 @@ const btnRoomConfig = document.querySelector('#btn-room-action-config')
 const ulRoomConfig = document.querySelector('#room-action-config-list')
 const chatContentMessages = document.querySelector('#chat-global')
 
+const CLASSNAME = {
+    active: '--active',
+    disabled: '--disabled',
+    invalid: '--invalid'
+}
 
+class ChatDataStorage{
+    constructor(item){
+        this.item = item
+        this.prevItem = localStorage.getItem(item)
+    }
+    getLocalStorage(){
+        return localStorage.getItem(this.item)
+    }
+    setLocalStorage(value){
+        return localStorage.setItem(this.item, value)
+    }
+}
+class ChatMessage extends ChatDataStorage{
+    constructor(itemStorage, userName, userID, userMessage, roomName, roomID, formUserMsg){
+        super(itemStorage)
+        this.username = userName
+        this.userID = userID
+        this.userMsg = userMessage
+        this.roonName = roomName
+        this.roomID = roomID
+        this.formMsg = formUserMsg
+    }
+    timeOutClass(element, classname){
+        element.value = ''
+        setTimeout(()=>{
+            element.classList.add(classname)
+        }, 1000)
+    }
+    validateMessage(){
+        const isHTML = this.userMsg instanceof HTMLElement
+        if(!isHTML) return console.log('No definido -> ',this.userMsg)
+        const userMsg = this.userMsg.value.trim()
+        if(userMsg === ''){
+            let classname = `${this.userMsg.id}${CLASSNAME.invalid}`
+            this.userMsg.classList.add(classname)
+            this.timeOutClass(this.userMsg, classname)
+        }
+        this.userMsg.value = this.userMsg.value.replace(/\s+/g, ' ').trim()
+        return this.userMsg.value
+    }
+    #eDocContentLoaded(){
+        this.username = this.getLocalStorage()
+        this.username.value === null ? this.username.value = 'User random' : null
+    }
+    #eFormMessage(e){
+        e.preventDefault()
+        this.validateMessage()
+    }
+    init(){
+        document.addEventListener('DOMContentLoaded', this.#eDocContentLoaded)
+        this.formMsg.addEventListener('submit', this.#eFormMessage)
+    }
+}
+class SocketsMessage {
+
+}

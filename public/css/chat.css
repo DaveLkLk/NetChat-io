@@ -265,9 +265,13 @@
     --size: 25px;
   }
   .server-user-config button{
+    cursor: pointer;
     background: transparent;
     --size: 25px;
     --fill: var(--room-clr-icon);
+  }
+  .server-user-config button:hover{
+    --fill: var(--room-clr-hover);
   }
   .server-user-config-list{
     position: absolute;

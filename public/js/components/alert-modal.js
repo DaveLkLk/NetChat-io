@@ -185,13 +185,6 @@ export function createAlert(container, title, description, classAlert, elementsF
         : template.alert_description.textContent = description
     template.span_icon.innerHTML = alertElement.icon()
     const btnClose = template.btn_close
-    // const buttonAlert = document.createElement('button')
-    // buttonAlert.textContent = 'X'
-    // buttonAlert.type = 'button'
-    // const messageAlert = document.createElement('p')
-    // messageAlert.textContent = message
-    // alert.appendChild(messageAlert)
-    // alert.appendChild(buttonAlert)
     // CONTROLAR EL TIMEOUT DE LAS ALERTAS
     let timeOutID;
     let timeOutIDTwo;
