@@ -1,5 +1,7 @@
 import { createAlert, MESSAGE_TYPE, ALERT_TYPE } from "./components/alert-modal.js" 
 import { createEmojiShow } from "./components/elements-html.js"
+import { messageURL } from "../scripts/socket-client/chat-url.js"
+import { tplBoxMessage } from "./templates/chat-messages.js"
 
 const zonaActual = Intl.DateTimeFormat().resolvedOptions().timeZone
 const divAlert = document.querySelector('.alert')
@@ -96,5 +98,60 @@ class ChatMessage extends ChatDataStorage{
     }
 }
 class SocketsMessage {
-
+    constructor(io, container, actionState, actionValue, username){
+        this.socket = io()
+        this.socket.on('connect', (data)=> console.log(data))
+        this.socket.on('disconnect', (data)=> console.log(data))
+        this.socketID = this.socket.id.slice(0,6)
+        this.container = container
+        this.actionUser = actionState
+        this.actionValue = actionValue
+        this.username = username
+    }
+    // PRIVATE
+    #dataUser(){
+        return {
+            userID: this.socketID,
+            userName: this.username,
+            zonaHoraria: zonaActual
+        }
+    }
+    // ENVIAR EVENTOS
+    eRegister(){
+        this.socket.emit('chat:register', this.#dataUser())
+    }
+    eMessages(){
+        this.socket.emit('chat:message', this.#dataUser)
+    }
+    //RECIBIR EVENTOS
+    onMessage(){
+        this.socket.on('chat:message', (data)=>{
+            const userSocket = data.from === this.socketID ? 'Me' : data.user
+            const classMsg = data.from === this.socketID ? 'chat-me' : 'chat-other'
+            const clearMsg = data.message.trim()
+            const formatMsg = messageURL(clearMsg)
+            const objMessage = {
+                classMsg:classMsg, 
+                user:userSocket,
+                message:formatMsg
+            }
+            this.actions.innerHTML = ''
+            this.container.innerHTML += tplBoxMessage(objMessage, data)
+            this.container.scrollTop = this.container.scrollHeight
+        })
+    }
+    onTypingOn(){
+        this.socket.on('chat:typing:on', (data)=>{
+            this.actionUser.value = data
+            this.actionValue = 'esta escribiendo...'
+        })
+    }
+    onTypingOff(){
+        this.socket.on('chat:typing:off', (data)=>{
+            this.actionUser.value = ''
+            this.actionValue.value = ''
+        })
+    }
 }
+// new SocketsMessage(io)
+
