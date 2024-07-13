@@ -26,11 +26,13 @@ const userMessage = document.querySelector('#chat-message')
 const boxUserSend = document.querySelector('.chat-form-send')
 const btnMicro = document.querySelector('#btn-chat-micro')
 const btnSend = document.querySelector('#btn-chat-send')
+const userFormChat = document.querySelector('#room-chat-form')
 // ROOM
 const chatRoomState = document.querySelector('#room-state')
 const chatRoomName = document.querySelector('#server-room-name')
 const chatRoomUserActive = document.querySelector('#server-room-users')
 const chatRoomUserState = document.querySelector('#server-room-active')
+const chatRoomShareID = document.querySelector('#room-action-share')
 const btnRoomCall = document.querySelector('#btn-room-action-call')
 const btnRoomConfig = document.querySelector('#btn-room-action-config')
 const ulRoomConfig = document.querySelector('#room-action-config-list')
@@ -39,7 +41,8 @@ const chatContentMessages = document.querySelector('#chat-global')
 const CLASSNAME = {
     active: '--active',
     disabled: '--disabled',
-    invalid: '--invalid'
+    invalid: '--invalid',
+    show: '--show',
 }
 
 class ChatDataStorage{
@@ -55,14 +58,18 @@ class ChatDataStorage{
     }
 }
 class ChatMessage extends ChatDataStorage{
-    constructor(itemStorage, userName, userID, userMessage, roomName, roomID, formUserMsg){
+    constructor(itemStorage){
         super(itemStorage)
-        this.username = userName
-        this.userID = userID
-        this.userMsg = userMessage
-        this.roonName = roomName
-        this.roomID = roomID
-        this.formMsg = formUserMsg
+        this.username = userName //nombre de usuario
+        this.userID = userID //ID del servidor de usuario
+        this.userMsg = userMessage //mensaje del usuario
+        this.roonName = chatRoomName //nombre de la sala activa
+        this.roomID = chatRoomShareID // ID de la sala activa
+        this.formMsg = userFormChat // Formulario del chat que envia el mensaje
+        this.microphone = btnMicro // boton del microfono del chat
+        this.btnMessage = btnSend // boton de enviar mensajes del chat
+        this.boxBtnChat = boxUserSend // Contenedor de: [btnMicro y btnChat]
+        this.rename = false // Estado del Modal para renombrar usuario
     }
     timeOutClass(element, classname){
         element.value = ''
@@ -78,9 +85,20 @@ class ChatMessage extends ChatDataStorage{
             let classname = `${this.userMsg.id}${CLASSNAME.invalid}`
             this.userMsg.classList.add(classname)
             this.timeOutClass(this.userMsg, classname)
+            return
         }
         this.userMsg.value = this.userMsg.value.replace(/\s+/g, ' ').trim()
         return this.userMsg.value
+    }
+    toggleBtnChat(){
+        if(this.userMsg.value === ''){
+            this.boxBtnChat.classList.remove(CLASSNAME.show)
+            return
+        }
+        if(this.userMsg.value.length > 0){
+            this.boxBtnChat.classList.add(CLASSNAME.show)
+            return
+        }
     }
     #eDocContentLoaded(){
         this.username = this.getLocalStorage()
@@ -88,13 +106,19 @@ class ChatMessage extends ChatDataStorage{
     }
     #eFormMessage(e){
         e.preventDefault()
-        this.validateMessage()
+        const newMessage = this.validateMessage()
+        // EMITIR EVENTO SOCKET
+        console.log(newMessage);
     }
     init(){
-        document.addEventListener('DOMContentLoaded', this.#eDocContentLoaded)
-        this.formMsg.addEventListener('submit', this.#eFormMessage)
+        // document.addEventListener('DOMContentLoaded', this.#eDocContentLoaded)
+        this.formMsg.addEventListener('submit', (e)=> this.#eFormMessage(e))
+        this.userMsg.addEventListener('input', ()=> this.toggleBtnChat())
     }
 }
+const USER_CHAT = new ChatMessage()
+USER_CHAT.init()
+
 class SocketsMessage {
 
 }

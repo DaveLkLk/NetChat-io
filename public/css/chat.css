@@ -60,7 +60,7 @@
     fill: var(--fill);
     pointer-events: none;
     user-select: none;
-    transition: fill .2 linear;
+    transition: fill .2s linear;
   }
   * li{
     list-style: none;
@@ -522,13 +522,16 @@
     --size: 22px;
     --fill: var(--room-clr-icon);
   }
+  .chat-form-send button:hover{
+    --fill: var(--room-clr-hover);
+  }
   .chat-form-send .form-send-switch:nth-child(2){
     display: none;
   }
-  .chat-form-send.message .form-send-switch:nth-child(1){
+  .chat-form-send.--show .form-send-switch:nth-child(1){
     display: none;
   }
-  .chat-form-send.message .form-send-switch:nth-child(2){
+  .chat-form-send.--show .form-send-switch:nth-child(2){
     display: block;
   }
   
