@@ -17,5 +17,5 @@ formUser.addEventListener('submit', (e)=>{
         return createAlert(divAlert,'',MESSAGE_TYPE.INFO_VACIO, ALERT_TYPE.INFO,[inputUser, btnUser], 2500)
     }
     localStorage.setItem('chat-username', inputValue)
-    window.location.assign('../chat.html')
+    window.location.assign('./chat.html')
 })

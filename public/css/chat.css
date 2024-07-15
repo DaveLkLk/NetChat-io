@@ -1,4 +1,5 @@
 @import url('./components//emoji.css');
+@import url('./components/alert.css');
 :root{
     --netchat-bg: #101010;
     --netchat-bg-chat: #303030;
@@ -512,6 +513,9 @@
     background: #6741d9;
     border-radius: 5px;
   }
+  .chat-message.--invalid{
+    animation: invalid .3s infinite linear;
+  }
   .chat-form-send{
     display: flex;
     gap: .5rem;
@@ -535,5 +539,9 @@
     display: block;
   }
   
-  
+  @keyframes invalid {
+    50%{
+        border: 1px solid var(--room-clr)
+    }
+  }
   

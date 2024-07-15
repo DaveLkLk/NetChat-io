@@ -123,7 +123,9 @@ export function inputDisabled(items){
 export function inputEnabled(items){
     items.forEach(item =>{
         item.disabled = false
-        item.style.cursor = 'pointer'
+        item.tagName !== 'TEXTAREA' && item.tagName !== 'INPUT'
+            ? item.style.cursor = 'pointer'
+            : item.style.cursor = 'text'
     })
 };
 function templateAlert(container){
@@ -163,15 +165,13 @@ function templateAlert(container){
 
 export function createAlert(container, title, description, classAlert, elementsForm, timeTemp=3000){
     inputDisabled(elementsForm)
+    let postAlert = 350
     const alert = container
-    const alertMsgExist = document.querySelector('.alert-message')
-    const alertCloseExist = document.querySelector('.alert-close')
-    if(alertMsgExist && alertCloseExist) alert.innerHTML = '';
-
-    // const buttonExiste = document.querySelector('.alert button')
-    // const messageExiste = document.querySelector('.alert p')
+    // const alertMsgExist = document.querySelector('.alert-message')
+    // const alertCloseExist = document.querySelector('.alert-close')
+    // if(alertMsgExist && alertCloseExist) alert.innerHTML = '';
+    alert.innerHTML = '';
     const template = templateAlert(alert)
-    // if(buttonExiste && messageExiste) alert.innerHTML = '';
     alert.classList.add(ALERT_TYPE.ACTIVE)
     setClassTemp(alert.classList)
     alert.classList.add(classAlert)
@@ -192,10 +192,10 @@ export function createAlert(container, title, description, classAlert, elementsF
         inputEnabled(elementsForm)
         timeOutID = setTimeout(() => {
             alert.classList.remove(ALERT_TYPE.ACTIVE)
-            timeOutIDTwo = setTimeout(()=>{
-                alert.classList.remove(classAlert)
-            }, timeTemp + 300)
         }, timeTemp)
+        timeOutIDTwo = setTimeout(()=>{
+            alert.classList.remove(classAlert)
+        }, timeTemp + postAlert)
     }
     function alertHandler(){
         inputEnabled(elementsForm)
@@ -205,8 +205,9 @@ export function createAlert(container, title, description, classAlert, elementsF
         if(timeOutIDTwo) clearTimeout(timeOutIDTwo)
         setTimeout(()=>{
             alert.classList.remove(classAlert)
-        }, 350)
+        }, postAlert)
         console.log("mostrarAlerta -> success");
+        return true
     }
     btnClose.addEventListener('click', alertHandler)
 };

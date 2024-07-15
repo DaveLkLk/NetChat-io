@@ -11,3 +11,10 @@ export function tplBoxMessage(obj, data){
     `;
     return div.innerHTML
 }
+export function tplBoxTyping(data, options){
+    const div = document.createElement('div');
+    div.innerHTML = `
+        
+    `;
+    return div.innerHTML
+}
