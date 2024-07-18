@@ -37,12 +37,13 @@ export class SocketsMessage {
     }
     eInputOn(){
         const { user }= this.#dataUser()
-        this.socket.emit('chat:typing:on', user)
+        const classname = CLASSNAME.typing
+        this.socket.emit('chat:typing:on', {user, classname})
     }
     eInputOff(){
         const { message }= this.#dataUser()
-        this.socket.emit('chat:typing:off', message)
-        console.log('emitir el evento off');
+        const classname = CLASSNAME.typing
+        this.socket.emit('chat:typing:off', {message, classname})
     }
     //RECIBIR EVENTOS
     onMessage(){
@@ -64,14 +65,18 @@ export class SocketsMessage {
     }
     onTypingOn(){
         this.socket.on('chat:typing:on', (data)=>{
-            this.actionUser.textContent = data
-            this.actionValue.textContent = 'esta escribiendo...'
+            this.actionUser.classList.add(String(data.classname))
+            this.actionValue.classList.add(String(data.classname))
+            this.actionUser.textContent = data.user
+            this.actionValue.textContent = 'está escribiendo...'
         })
     }
     onTypingOff(){
-        this.socket.on('chat:typing:off', ()=>{
+        this.socket.on('chat:typing:off', (data)=>{
+            this.actionUser.classList.remove(String(data.classname))
+            this.actionValue.classList.remove(String(data.classname))
             this.actionUser.textContent = '3'
-            this.actionValue.textContent = 'usuarios conectados...'
+            this.actionValue.textContent = 'usuarios conectados'
         })
     }
     init(){

@@ -3,4 +3,5 @@ export const CLASSNAME = {
     disabled: '--disabled',
     invalid: '--invalid',
     show: '--show',
+    typing: '--typing'
 }
