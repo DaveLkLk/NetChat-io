@@ -12,7 +12,6 @@ export class SocketsMessage {
         this.socket.on('connect', ()=> {
             this.socketID = this.socket.id.slice(0, 6)
         })
-        this.socket.on('disconnect', ()=> console.log(this.socket.id))
         this.container = obj.container
         this.actionUser = obj.actUser
         this.actionValue = obj.actState
@@ -38,13 +37,12 @@ export class SocketsMessage {
     }
     eInputOn(){
         const { user }= this.#dataUser()
-        console.log(user);
         this.socket.emit('chat:typing:on', user)
     }
     eInputOff(){
         const { message }= this.#dataUser()
         this.socket.emit('chat:typing:off', message)
-        console.log('emitir llego aki');
+        console.log('emitir el evento off');
     }
     //RECIBIR EVENTOS
     onMessage(){
@@ -72,9 +70,8 @@ export class SocketsMessage {
     }
     onTypingOff(){
         this.socket.on('chat:typing:off', ()=>{
-            console.log('recibir llego aki');
-            this.actionUser.value = '3'
-            this.actionValue.value = 'usuarios conectados...'
+            this.actionUser.textContent = '3'
+            this.actionValue.textContent = 'usuarios conectados...'
         })
     }
     init(){
@@ -103,20 +100,19 @@ export class DisabledElements {
 }
 export class ChatDataStorage{
     constructor(item){
-        this.item = item
         this.prevItem = localStorage.getItem(item)
     }
-    getLocalStorage(){
-        return localStorage.getItem(this.item)
+    getLocalStorage(item){
+        return localStorage.getItem(item)
     }
-    setLocalStorage(value){
-        return localStorage.setItem(this.item, value)
+    setLocalStorage(item, value){
+        return localStorage.setItem(item, value)
     }
 }
 export class ChatMessage extends ChatDataStorage{
     constructor(itemStorage, io, objSocket){
         super(itemStorage)
-        this.username = null //nombre de usuario
+        this.username = this.getLocalStorage('chat-username') //nombre de usuario
         this.userID = null //ID del servidor de usuario
         this.userMsg = null //mensaje del usuario
         this.roomName = null //nombre de la sala activa
@@ -164,6 +160,7 @@ export class ChatMessage extends ChatDataStorage{
     }
     toggleBtnChat(){
         if(this.userMsg.value === ''){
+            console.log('textarea vacio');
             this.boxBtnChat.classList.remove(CLASSNAME.show)
             this.socket.eInputOff()
             return

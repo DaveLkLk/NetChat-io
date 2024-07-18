@@ -38,7 +38,9 @@ const btnRoomConfig = document.querySelector('#btn-room-action-config')
 const ulRoomConfig = document.querySelector('#room-action-config-list')
 const chatContentMessages = document.querySelector('#chat-global')
 
-
+// OBTENER VALORES DEL LOCALSTORAGE --USERNAME
+const userLocalName = localStorage.getItem('chat-username')
+userLocalName !== null ? userName.textContent = userLocalName : userName.textContent = 'User random'
 
 let arrElements = [btnMicro,serverBtnAddRoom, serverBtnFAQ,btnRoomCall, btnRoomConfig, btnUserConfig]
 const INVALID_ELEMENTS = new DisabledElements(arrElements, divAlert)
