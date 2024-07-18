@@ -437,6 +437,8 @@
     width: max-content;
     padding: .5rem;
     color: var(--room-clr);
+    margin-bottom: .5rem;
+    margin-inline: auto;
   }
   .chat-users .chat-msg{
     display: grid;
@@ -447,13 +449,14 @@
     font-size: .8rem;
   }
   .content-room-chat .chat-me{
-    margin: .5rem 0 .2rem auto;
+    margin-right: 0;
     text-align: right;
     background: var(--chat-bg-me);
     border-radius: 20px 20px 0 20px;
     box-shadow: 2px 3px var(--chat-shadow-blur) var(--chat-shadow);
   }
   .content-room-chat .chat-other{
+    margin-left: 0;
     background: var(--chat-bg-other);
     border-radius: 20px 20px 20px 0;
     box-shadow: -2px 3px var(--chat-shadow-blur) var(--chat-shadow);
